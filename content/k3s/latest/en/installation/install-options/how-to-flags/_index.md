@@ -1,30 +1,31 @@
 ---
-title: How to Use Flags and Environment Variables
+title: 如何使用标志和环境变量
 weight: 3
 ---
 
-Throughout the K3s documentation, you will see some options that can be passed in as both command flags and environment variables. The below examples show how these options can be passed in both ways.
+在整个K3s文档中，你会看到一些选项可以作为命令标志和环境变量传递进来。下面的例子展示了这些选项如何以两种方式传递。
 
-### Example A: K3S_KUBECONFIG_MODE
+### 示例 A: K3S_KUBECONFIG_MODE
 
-The option to allow writing to the kubeconfig file is useful for allowing a K3s cluster to be imported into Rancher. Below are two ways to pass in the option.
+允许写入kubeconfig文件的选项对于允许将K3s集群导入Rancher很有用。以下是传递该选项的两种方式。
 
-Using the flag `--write-kubeconfig-mode 644`:
+
+使用标志 `--write-kubeconfig-mode 644`:
 
 ```bash
 $ curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode 644
 ```
-Using the environment variable `K3S_KUBECONFIG_MODE`:
+使用环境变量 `K3S_KUBECONFIG_MODE`:
 
 ```bash
 $ curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE="644" sh -s -
 ```
 
-### Example B: INSTALL_K3S_EXEC
+### 示例 B: INSTALL_K3S_EXEC
 
-If this command is not specified as a server or agent command, it will default to "agent" if `K3S_URL` is set, or "server" if it is not set.
+如果这个命令里没有指定为server或agent，则如果设置了`K3S_URL`，则默认为 "agent"。如果没有设置，则默认为 "server"。
 
-The final systemd command resolves to a combination of this environment variable and script args. To illustrate this, the following commands result in the same behavior of registering a server without flannel:
+最后的systemd命令解析为这个环境变量和脚本参数的组合。为了说明这一点，以下命令的结果与注册一个没有flannel的server的行为相同。
 
 ```bash
 curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--no-flannel" sh -s -
