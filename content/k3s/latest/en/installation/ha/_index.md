@@ -1,72 +1,72 @@
 ---
-title: High Availability with an External DB
+title: 使用外部数据库实现高可用
 weight: 30
 ---
 
-> **Note:** Official support for installing Rancher on a Kubernetes cluster was introduced in our v1.0.0 release.
+> **注意：** 我们在v1.0.0版本中引入了在Kubernetes集群上安装Rancher的官方支持。
 
-This section describes how to install a high-availability K3s cluster with an external database.
+本节介绍了如何使用外部数据库安装一个高可用的K3s集群。
 
-Single server clusters can meet a variety of use cases, but for environments where uptime of the Kubernetes control plane is critical, you can run K3s in an HA configuration. An HA K3s cluster is comprised of:
+单节点k3s server集群可以满足各种用例，但是对于需要Kubernetes控制平面稳定运行的重要环境，您可以在HA配置中运行K3s。一个K3s HA集群由以下几个部分组成:
 
-* Two or more **server nodes** that will serve the Kubernetes API and run other control plane services
-* Zero or more **agent nodes** that are designated to run your apps and services
-* An **external datastore** (as opposed to the embedded SQLite datastore used in single-server setups)
-* A **fixed registration address** that is placed in front of the server nodes to allow agent nodes to register with the cluster
+* 两个或多个**server节点**，将为Kubernetes API提供服务并运行其他控制平面服务。
+* 零个或多个**agent节点**，用于运行您的应用和服务。
+* **外部数据存储** (与单个k3s server设置中使用的嵌入式SQLite数据存储相反) 
+* **固定的注册地址**，位于server节点的前面，以允许agent节点向集群注册
 
-For more details on how these components work together, refer to the [architecture section.]({{<baseurl>}}/k3s/latest/en/architecture/#high-availability-with-an-external-db)
+关于这些组件如何协同工作的更多细节，请参考[架构部分。]({{<baseurl>}}/k3s/latest/en/architecture/#high-availability-with-an-external-db)
 
-Agents register through the fixed registration address, but after registration they establish a connection directly to one of the server nodes. This is a websocket connection initiated by the `k3s agent` process and it is maintained by a client-side load balancer running as part of the agent process.
+Agent通过固定的注册地址进行注册，但注册后直接与其中一个server节点建立连接。这是一个由`k3s agent`进程发起的websocket连接，并由作为agent进程一部分运行的客户端负载均衡器维护。
 
-# Installation Outline
+# 安装概要
 
-Setting up an HA cluster requires the following steps:
+设置HA集群需要以下步骤:
 
-1. [Create an external datastore](#1-create-an-external-datastore)
-2. [Launch server nodes](#2-launch-server-nodes)
-3. [Configure the fixed registration address](#3-configure-the-fixed-registration-address)
-4. [Join agent nodes](#4-optional-join-agent-nodes)
+1. [创建一个外部数据存储](#1-create-an-external-datastore)
+2. [启动server节点](#2-launch-server-nodes)
+3. [配置固定的注册地址](#3-configure-the-fixed-registration-address)
+4. [加入agent节点](#4-optional-join-agent-nodes)
 
-### 1. Create an External Datastore
-You will first need to create an external datastore for the cluster. See the [Cluster Datastore Options]({{<baseurl>}}/k3s/latest/en/installation/datastore/) documentation for more details.
+### 1. 创建一个外部数据存储
+你首先需要为集群创建一个外部数据存储。请参阅[群集数据存储选项]({{<baseurl>}}/k3s/latest/en/installation/datastore/)文档了解更多细节。
 
-### 2. Launch Server Nodes
-K3s requires two or more server nodes for this HA configuration. See the [Installation Requirements]({{<baseurl>}}/k3s/latest/en/installation/installation-requirements/) guide for minimum machine requirements.
+### 2. 启动server节点
+K3s需要两个或更多的server节点来实现这种HA配置。请参阅[安装要求]({{<baseurl>}}/k3s/latest/en/installation/installation-requirements/)指南了解最低主机要求。
 
-When running the `k3s server` command on these nodes, you must set the `datastore-endpoint` parameter so that K3s knows how to connect to the external datastore.
+当在这些节点上运行`k3s server`命令时，必须设置`datastore-endpoint`参数，以便K3s知道如何连接到外部数据存储。
 
-For example, a command like the following could be used to install the K3s server with a MySQL database as the external datastore:
+例如，像下面这样的命令可以用来安装以MySQL数据库作为外部数据存储的K3s server：
 
 ```
 curl -sfL https://get.k3s.io | sh -s - server \
   --datastore-endpoint="mysql://username:password@tcp(hostname:3306)/database-name"
 ```
 
-The datastore endpoint format differs based on the database type. For details, refer to the section on [datastore endpoint formats.]({{<baseurl>}}/k3s/latest/en/installation/datastore/#datastore-endpoint-format-and-functionality)
+根据数据库类型的不同，数据存储端点的格式也不同。详情请参考[数据存储端点格式]({{<baseurl>}}/k3s/latest/en/installation/datastore/#datastore-endpoint-format-and-functionality)章节。
 
-To configure TLS certificates when launching server nodes, refer to the [datastore configuration guide.]({{<baseurl>}}/k3s/latest/en/installation/datastore/#external-datastore-configuration-parameters)
+启动server节点时，若要设置TLS证书，请参考[数据存储配置指南]({{<baseurl>}}/k3s/latest/en/installation/datastore/#external-datastore-configuration-parameters)。
 
-> **Note:** The same installation options available to single-server installs are also available for high-availability installs. For more details, see the [Installation and Configuration Options]({{<baseurl>}}/k3s/latest/en/installation/install-options/) documentation.
+> **注意：** 单台server安装时可用的安装选项也适用于高可用安装。更多详情，请参见[安装和配置选项]({{<baseurl>}}/k3s/latest/en/installation/install-options/)文档。
 
-By default, server nodes will be schedulable and thus your workloads can get launched on them. If you wish to have a dedicated control plane where no user workloads will run, you can use taints. The <span style='white-space: nowrap'>`node-taint`</span> parameter will allow you to configure nodes with taints, for example <span style='white-space: nowrap'>`--node-taint k3s-controlplane=true:NoExecute`</span>.
+默认情况下，server节点将是可调度的，因此你的工作负载可以在它们上启动。如果你希望有一个专用的控制平面，在这个平面上不会运行用户工作负载，你可以使用taints。<span style='white-space: nowrap'>`node-taint`</span>参数将允许你用污点配置节点，例如<span style='white-space: nowrap'>`--node-taint k3s-controlplane=true:NoExecute`</span>。
 
-Once you've launched the `k3s server` process on all server nodes, ensure that the cluster has come up properly with `k3s kubectl get nodes`. You should see your server nodes in the Ready state.
+在所有server节点上启动`k3s server`进程后，用`k3s kubectl get nodes`确保集群正常运行。你应该会看到你的server节点处`Ready`状态。
 
-### 3. Configure the Fixed Registration Address
+### 3. 配置固定的注册地址
 
-Agent nodes need a URL to register against. This can be the IP or hostname of any of the server nodes, but in many cases those may change over time. For example, if you are running your cluster in a cloud that supports scaling groups, you may scale the server node group up and down over time, causing nodes to be created and destroyed and thus having different IPs from the initial set of server nodes. Therefore, you should have a stable endpoint in front of the server nodes that will not change over time. This endpoint can be set up using any number approaches, such as:
+Agent节点需要一个URL来注册。这可以是任何server节点的IP或主机名，但在许多情况下，这些节点可能会随着时间的推移而改变。例如，如果您在支持缩放组的云中运行群集，您可能会随着时间的推移上下缩放server节点组，导致节点被创建和销毁，从而具有与初始server节点不同的IP。因此，你应该在server节点前面有一个稳定的端点，不会随时间推移而改变。可以使用许多方法来设置此端点，例如：
 
-* A layer-4 (TCP) load balancer
-* Round-robin DNS
-* Virtual or elastic IP addresses
+* 一个4层（TCP）负载均衡器
+* 轮询 DNS
+* 虚拟或弹性IP地址
 
-This endpoint can also be used for accessing the Kubernetes API. So you can, for example, modify your [kubeconfig](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/) file to point to it instead of a specific node. To avoid certificate errors in such a configuration, you should install the server with the `--tls-san YOUR_IP_OR_HOSTNAME_HERE` option. This option adds an additional hostname or IP as a Subject Alternative Name in the TLS cert, and it can be specified multiple times if you would like to access via both the IP and the hostname.
+这个端点也可以用来访问Kubernetes API。因此，你可以修改你的[kubeconfig](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/)文件来指向它，而不是特定的节点。为了避免在这样的配置中出现证书错误，你应该使用`--tls-san YOUR_IP_OR_HOSTNAME_HERE`选项安装server节点。这个选项在TLS证书中增加了一个额外的主机名或IP作为备用名称，如果你想通过IP和主机名访问，可以多次指定。
 
-### 4. Optional: Join Agent Nodes
+### 4. 可选: 加入 Agent 节点
 
-Because K3s server nodes are schedulable by default, the minimum number of nodes for an HA K3s server cluster is two server nodes and zero agent nodes. To add nodes designated to run your apps and services, join agent nodes to your cluster.
+因为K3s server节点默认是可调度的，所以HA K3s server集群的最小节点数是两个server节点和零个agent节点。要添加指定运行您的应用和服务的节点，请将agent节点加入到您的集群中。
 
-Joining agent nodes in an HA cluster is the same as joining agent nodes in a single server cluster. You just need to specify the URL the agent should register to and the token it should use.
+在 HA 集群中加入agent节点与在单个server集群中加入agent节点是一样的。你只需要指定agent应该注册到的URL和它应该使用的token即可。
 
 ```
 K3S_TOKEN=SECRET k3s agent --server https://fixed-registration-address:6443
