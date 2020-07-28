@@ -1,136 +1,137 @@
 ---
-title: K3s Agent Configuration Reference
+title: K3s agent配置参考
 weight: 2
 ---
-In this section, you'll learn how to configure the K3s agent.
+在本节中，您将学习如何配置K3s agent。
 
-> Throughout the K3s documentation, you will see some options that can be passed in as both command flags and environment variables. For help with passing in options, refer to [How to Use Flags and Environment Variables.]({{<baseurl>}}/k3s/latest/en/installation/install-options/how-to-flags)
+> 在整个K3s文档中，你会看到一些选项可以作为命令标志和环境变量传递进来。关于传入选项的帮助，请参考[如何使用标志和环境变量。]({{<baseurl>}}/k3s/latest/en/installation/install-options/how-to-flags)
 
-- [Logging](#logging)
-- [Cluster Options](#cluster-options)
-- [Data](#data)
-- [Node](#node)
-- [Runtime](#runtime)
-- [Networking](#networking)
-- [Customized Flags](#customized-flags)
-- [Experimental](#experimental)
-- [Deprecated](#deprecated)
-- [Node Labels and Taints for Agents](#node-labels-and-taints-for-agents)
-- [K3s Agent CLI Help](#k3s-agent-cli-help)
+- [日志](#logging)
+- [集群选项](#cluster-options)
+- [数据](#data)
+- [节点](#node)
+- [运行时](#runtime)
+- [网络](#networking)
+- [自定义标签](#customized-flags)
+- [实验性](#experimental)
+- [启用](#deprecated)
+- [Agent的节点标签和污点](#node-labels-and-taints-for-agents)
+- [K3s Agent CLI 帮助](#k3s-agent-cli-help)
 
-### Logging
+### 日志
 
-| Flag | Default | Description |
+| 标签 | 默认 | 说明 |
 |------|---------|-------------|
-|   `-v` value    |     0         | Number for the log level verbosity        |
-|   `--vmodule` value   | N/A        | Comma-separated list of pattern=N settings for file-filtered logging        |
-|   `--log value, -l` value  |  N/A    | Log to file   |
-|   `--alsologtostderr`  | N/A        | Log to standard error as well as file (if set)     | 
+|   `-v` value    |     0         | 日志级别详细程度的数字        |
+|   `--vmodule` value   | N/A        | 以逗号分隔的pattern=N设置列表，用于文件过滤的日志记录        |
+|   `--log value, -l` value  |  N/A    | 记录到文件   |
+|   `--alsologtostderr`  | N/A        | 记录到标准错误输出和文件（如果设置）     | 
 
-### Cluster Options
-| Flag | Environment Variable | Description |
+### 集群选项
+| 标签 | 环境变量 | 说明 |
 |------|----------------------|-------------|
-|   `--token value, -t` value  | `K3S_TOKEN`    | Token to use for authentication    |
-|   `--token-file` value   |  `K3S_TOKEN_FILE`     | Token file to use for authentication       |
-|   `--server value, -s` value  | `K3S_URL`    | Server to connect to     |
+|   `--token value, -t` value  | `K3S_TOKEN`    | 用于身份认证的token    |
+|   `--token-file` value   |  `K3S_TOKEN_FILE`     | 用于身份认证的token文件       |
+|   `--server value, -s` value  | `K3S_URL`    | 要连接的k3s Server     |
 
 
-### Data
-| Flag | Default | Description |
+### 数据
+| 标签 | 默认 | 说明 |
 |------|---------|-------------|
-|   `--data-dir value, -d` value  | "/var/lib/rancher/k3s"    |  Folder to hold state |
+|   `--data-dir value, -d` value  | "/var/lib/rancher/k3s"    |  存放数据的目录 |
 
-### Node
-| Flag | Environment Variable | Description |
+### 节点
+| 标签 | 环境变量 | 说明 |
 |------|----------------------|-------------|
-|   `--node-name` value |  `K3S_NODE_NAME`      |  Node name       |
-|   `--with-node-id`    |  N/A         | Append id to node name      |
-|   `--node-label` value |    N/A        |  Registering and starting kubelet with set of labels   |
-|   `--node-taint` value |      N/A     | Registering kubelet with set of taints    |
+|   `--node-name` value |  `K3S_NODE_NAME`      |  节点名称       |
+|   `--with-node-id`    |  N/A         | 将ID附加到节点名称      |
+|   `--node-label` value |    N/A        |  用一组标签注册和启动kubelet。   |
+|   `--node-taint` value |      N/A     | 用一组污点注册kubelet    |
 
-### Runtime
-| Flag | Default | Description |
+### 运行时
+| 标签 | 默认 | 说明 |
 |------|---------|-------------|
-|   `--docker` |      N/A        |      Use docker instead of containerd       |
-|   `--container-runtime-endpoint` value | N/A   |  Disable embedded containerd and use alternative CRI implementation |
-|   `--pause-image` value | "docker.io/rancher/pause:3.1"     |  Customized pause image for containerd or docker sandbox       | (agent/runtime)  (default: )
-|   `--private-registry` value | "/etc/rancher/k3s/registries.yaml"    |   Private registry configuration file   |
+|   `--docker` |      N/A        |      用docker代替containerd       |
+|   `--container-runtime-endpoint` value | N/A   |  禁用嵌入式containerd，使用替代的CRI实现 |
+|   `--pause-image` value | "docker.io/rancher/pause:3.1"     |  针对containerd或Docker的自定义pause镜像      | (agent/runtime)  (默认: )
+|   `--private-registry` value | "/etc/rancher/k3s/registries.yaml"    |   私有注册表配置文件   |
 
-### Networking
-| Flag | Environment Variable | Description |
+### 网络
+| 标签 | 环境变量 | 说明 |
 |------|----------------------|-------------|
-|   `--node-ip value, -i` value | N/A   |   IP address to advertise for node  |
-|   `--node-external-ip` value |  N/A   | External IP address to advertise for node      |
-|   `--resolv-conf` value |   `K3S_RESOLV_CONF`    |  Kubelet resolv.conf file      | 
-|   `--flannel-iface` value |    N/A   | Override default flannel interface      |
-|   `--flannel-conf` value |    N/A     |  Override default flannel config file |
+|   `--node-ip value, -i` value | N/A   |   为节点发布的IP地址  |
+|   `--node-external-ip` value |  N/A   | 对外发布节点的IP地址      |
+|   `--resolv-conf` value |   `K3S_RESOLV_CONF`    |  Kubelet resolv.conf 文件      | 
+|   `--flannel-iface` value |    N/A   | 覆盖默认的flannel接口      |
+|   `--flannel-conf` value |    N/A     |  覆盖默认的flannel文件 |
 
-### Customized Flags
-| Flag |  Description |
+### 自定义标签
+| 标签 |  说明 |
 |------|--------------|
-|   `--kubelet-arg` value |   Customized flag for kubelet process      | 
-|   `--kube-proxy-arg` value |   Customized flag for kube-proxy process    |
+|   `--kubelet-arg` value |   自定义kubelet进程的参数      | 
+|   `--kube-proxy-arg` value |   自定义kube-proxy进程的参数    |
 
-### Experimental
-| Flag |  Description |
+### 实验性
+| 标签 |  说明 |
 |------|--------------|
-|   `--rootless`  |     Run rootless           |
+|   `--rootless`  |     运行 rootless           |
 
-### Deprecated
-| Flag | Environment Variable | Description |
+### 启用
+| 标签 | 环境变量 | 说明 |
 |------|----------------------|-------------|
-|   `--no-flannel`   |   N/A       |   Use `--flannel-backend=none`       | 
-|   `--cluster-secret` value  |   `K3S_CLUSTER_SECRET`     |    Use `--token` |
+|   `--no-flannel`   |   N/A       |   使用 `--flannel-backend=none`       | 
+|   `--cluster-secret` value  |   `K3S_CLUSTER_SECRET`     |    使用 `--token` |
 
-### Node Labels and Taints for Agents
+### Agent节点的 标签和污点
 
-K3s agents can be configured with the options `--node-label` and `--node-taint` which adds a label and taint to the kubelet. The two options only add labels and/or taints at registration time, so they can only be added once and not changed after that again by running K3s commands.
+K3s agent可以用`--node-label`和`--node-taint`这两个选项进行配置，这两个选项可以给kubelet添加标签和污点。这两个选项只在注册时添加标签和/或污点，所以只能添加一次，之后不能再通过运行K3s命令来改变。
 
-Below is an example showing how to add labels and a taint:
+下面这个例子来说明如何添加标签和污点:
 ```bash
      --node-label foo=bar \
      --node-label hello=world \
      --node-taint key1=value1:NoExecute
 ```
 
-If you want to change node labels and taints after node registration you should use `kubectl`. Refer to the official Kubernetes documentation for details on how to add [taints](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/) and [node labels.](https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes/#add-a-label-to-a-node)
+如果你想在节点注册后更改节点标签和污点，你应该使用`kubectl`。关于如何添加[taints](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/)和[node labels.](https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes/#add-a-label-to-a-node)，请参考Kubernetes官方文档。
 
-### K3s Agent CLI Help
 
-> If an option appears in brackets below, for example `[$K3S_URL]`, it means that the option can be passed in as an environment variable of that name.
+### K3s Agent CLI 帮助
+
+> 如果一个选项出现在下面的括号里，例如`[$K3S_URL]`，则意味着该选项可以作为该名称的环境变量传递进来。
 
 ```bash
-NAME:
-   k3s agent - Run node agent
+名称:
+   k3s agent - 运行agent节点
 
-USAGE:
-   k3s agent [OPTIONS]
+使用:
+   k3s agent [选项]
 
-OPTIONS:
-   -v value                            (logging) Number for the log level verbosity (default: 0)
-   --vmodule value                     (logging) Comma-separated list of pattern=N settings for file-filtered logging
-   --log value, -l value               (logging) Log to file
-   --alsologtostderr                   (logging) Log to standard error as well as file (if set)
-   --token value, -t value             (cluster) Token to use for authentication [$K3S_TOKEN]
-   --token-file value                  (cluster) Token file to use for authentication [$K3S_TOKEN_FILE]
-   --server value, -s value            (cluster) Server to connect to [$K3S_URL]
-   --data-dir value, -d value          (agent/data) Folder to hold state (default: "/var/lib/rancher/k3s")
+选项:
+   -v value                            (logging) 日志级别详细程度的数字 (默认: 0)
+   --vmodule value                     (logging) 以逗号分隔的pattern=N设置列表，用于文件过滤的日志记录
+   --log value, -l value               (logging) 记录到文件
+   --alsologtostderr                   (logging) 记录到标准错误输出和文件（如果设置）
+   --token value, -t value             (cluster) 用于身份认证的token [$K3S_TOKEN]
+   --token-file value                  (cluster) 用于身份认证的token文件 [$K3S_TOKEN_FILE]
+   --server value, -s value            (cluster) 要连接的k3s Server [$K3S_URL]
+   --data-dir value, -d value          (agent/data) 存放数据的目录 (默认: "/var/lib/rancher/k3s")
    --node-name value                   (agent/node) Node name [$K3S_NODE_NAME]
-   --with-node-id                      (agent/node) Append id to node name
-   --node-label value                  (agent/node) Registering and starting kubelet with set of labels
-   --node-taint value                  (agent/node) Registering kubelet with set of taints
-   --docker                            (agent/runtime) Use docker instead of containerd
-   --container-runtime-endpoint value  (agent/runtime) Disable embedded containerd and use alternative CRI implementation
-   --pause-image value                 (agent/runtime) Customized pause image for containerd or docker sandbox (default: "docker.io/rancher/pause:3.1")
-   --private-registry value            (agent/runtime) Private registry configuration file (default: "/etc/rancher/k3s/registries.yaml")
-   --node-ip value, -i value           (agent/networking) IP address to advertise for node
-   --node-external-ip value            (agent/networking) External IP address to advertise for node
-   --resolv-conf value                 (agent/networking) Kubelet resolv.conf file [$K3S_RESOLV_CONF]
-   --flannel-iface value               (agent/networking) Override default flannel interface
-   --flannel-conf value                (agent/networking) Override default flannel config file
-   --kubelet-arg value                 (agent/flags) Customized flag for kubelet process
-   --kube-proxy-arg value              (agent/flags) Customized flag for kube-proxy process
-   --rootless                          (experimental) Run rootless
-   --no-flannel                        (deprecated) use --flannel-backend=none
-   --cluster-secret value              (deprecated) use --token [$K3S_CLUSTER_SECRET]
+   --with-node-id                      (agent/node) 将ID附加到节点名称
+   --node-label value                  (agent/node) 用一组标签注册和启动kubelet。
+   --node-taint value                  (agent/node) 用一组污点注册kubelet
+   --docker                            (agent/runtime) 用docker代替containerd
+   --container-runtime-endpoint value  (agent/runtime) 禁用嵌入式containerd，使用替代的CRI实现
+   --pause-image value                 (agent/runtime) 针对containerd或Docker的自定义pause镜像(默认: "docker.io/rancher/pause:3.1")
+   --private-registry value            (agent/runtime) 私有注册表配置文件 (默认: "/etc/rancher/k3s/registries.yaml")
+   --node-ip value, -i value           (agent/networking) 为节点发布的IP地址
+   --node-external-ip value            (agent/networking) 对外发布节点的IP地址
+   --resolv-conf value                 (agent/networking) Kubelet resolv.conf 文件 [$K3S_RESOLV_CONF]
+   --flannel-iface value               (agent/networking) 覆盖默认的flannel接口
+   --flannel-conf value                (agent/networking) 覆盖默认的flannel文件
+   --kubelet-arg value                 (agent/flags) 自定义kubelet进程的参数
+   --kube-proxy-arg value              (agent/flags) 自定义kube-proxy进程的参数
+   --rootless                          (experimental) 运行 rootless
+   --no-flannel                        (deprecated) 使用 --flannel-backend=none
+   --cluster-secret value              (deprecated) 使用 --token [$K3S_CLUSTER_SECRET]
 ```
