@@ -52,7 +52,7 @@ K3s server需要6443端口才能被节点访问。
 
 <figcaption>K3s Server节点的入站规则</figcaption>
 
-| 协议 | 端口 | 源 | 说明
+| 协议 | 端口 | 源 | 描述
 |-----|-----|----------------|---|
 | TCP | 6443 | K3s agent 节点 | Kubernetes API
 | UDP | 8472 | K3s server 和 agent 节点 | R仅对Flannel VXLAN需要

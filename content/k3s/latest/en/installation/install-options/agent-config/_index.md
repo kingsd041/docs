@@ -12,7 +12,7 @@ weight: 2
 - [节点](#node)
 - [运行时](#runtime)
 - [网络](#networking)
-- [自定义标签](#customized-flags)
+- [定制标志](#customized-flags)
 - [实验性](#experimental)
 - [启用](#deprecated)
 - [Agent的节点标签和污点](#node-labels-and-taints-for-agents)
@@ -20,7 +20,7 @@ weight: 2
 
 ### 日志
 
-| 标签 | 默认 | 说明 |
+| Flag |  默认值 | 描述 |
 |------|---------|-------------|
 |   `-v` value    |     0         | 日志级别详细程度的数字        |
 |   `--vmodule` value   | N/A        | 以逗号分隔的pattern=N设置列表，用于文件过滤的日志记录        |
@@ -28,7 +28,7 @@ weight: 2
 |   `--alsologtostderr`  | N/A        | 记录到标准错误输出和文件（如果设置）     | 
 
 ### 集群选项
-| 标签 | 环境变量 | 说明 |
+| Flag | 环境变量 | 描述 |
 |------|----------------------|-------------|
 |   `--token value, -t` value  | `K3S_TOKEN`    | 用于身份认证的token    |
 |   `--token-file` value   |  `K3S_TOKEN_FILE`     | 用于身份认证的token文件       |
@@ -36,12 +36,12 @@ weight: 2
 
 
 ### 数据
-| 标签 | 默认 | 说明 |
+| Flag |  默认值 | 描述 |
 |------|---------|-------------|
 |   `--data-dir value, -d` value  | "/var/lib/rancher/k3s"    |  存放数据的目录 |
 
 ### 节点
-| 标签 | 环境变量 | 说明 |
+| Flag | 环境变量 | 描述 |
 |------|----------------------|-------------|
 |   `--node-name` value |  `K3S_NODE_NAME`      |  节点名称       |
 |   `--with-node-id`    |  N/A         | 将ID附加到节点名称      |
@@ -49,7 +49,7 @@ weight: 2
 |   `--node-taint` value |      N/A     | 用一组污点注册kubelet    |
 
 ### 运行时
-| 标签 | 默认 | 说明 |
+| Flag |  默认值 | 描述 |
 |------|---------|-------------|
 |   `--docker` |      N/A        |      用docker代替containerd       |
 |   `--container-runtime-endpoint` value | N/A   |  禁用嵌入式containerd，使用替代的CRI实现 |
@@ -57,7 +57,7 @@ weight: 2
 |   `--private-registry` value | "/etc/rancher/k3s/registries.yaml"    |   私有注册表配置文件   |
 
 ### 网络
-| 标签 | 环境变量 | 说明 |
+| Flag | 环境变量 | 描述 |
 |------|----------------------|-------------|
 |   `--node-ip value, -i` value | N/A   |   为节点发布的IP地址  |
 |   `--node-external-ip` value |  N/A   | 对外发布节点的IP地址      |
@@ -65,19 +65,19 @@ weight: 2
 |   `--flannel-iface` value |    N/A   | 覆盖默认的flannel接口      |
 |   `--flannel-conf` value |    N/A     |  覆盖默认的flannel文件 |
 
-### 自定义标签
-| 标签 |  说明 |
+### 定制标志
+| Flag |  描述 |
 |------|--------------|
 |   `--kubelet-arg` value |   自定义kubelet进程的参数      | 
 |   `--kube-proxy-arg` value |   自定义kube-proxy进程的参数    |
 
 ### 实验性
-| 标签 |  说明 |
+| Flag |  描述 |
 |------|--------------|
 |   `--rootless`  |     运行 rootless           |
 
 ### 启用
-| 标签 | 环境变量 | 说明 |
+| Flag | 环境变量 | 描述 |
 |------|----------------------|-------------|
 |   `--no-flannel`   |   N/A       |   使用 `--flannel-backend=none`       | 
 |   `--cluster-secret` value  |   `K3S_CLUSTER_SECRET`     |    使用 `--token` |

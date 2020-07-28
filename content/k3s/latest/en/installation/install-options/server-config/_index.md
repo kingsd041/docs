@@ -23,7 +23,7 @@ weight: 1
     - [自定义选项](#customized-options)
     - [存储类](#storage-class)
     - [Kubernetes 组件](#kubernetes-components)
-    - [为Kubernetes进程自定义标签](#customized-flags-for-kubernetes-processes)
+    - [为Kubernetes进程定制标志](#customized-flags-for-kubernetes-processes)
     - [实验性选项](#experimental-options)
     - [废弃的选项](#deprecated-options)
 - [K3s Server Cli 帮助](#k3s-server-cli-help)
@@ -33,7 +33,7 @@ weight: 1
 
 ### 数据库
 
-| 标签 | 环境变量 | 说明 |
+| Flag | 环境变量 | 描述 |
 |------|----------------------|-------------|
 |  `--datastore-endpoint` value | `K3S_DATASTORE_ENDPOINT` | 指定 etcd、Mysql、Postgres 或 Sqlite（默认）数据源名称。 |
 |  `--datastore-cafile` value | `K3S_DATASTORE_CAFILE` | TLS证书授权文件，用于确保数据存储后端通信的安全。       |
@@ -42,14 +42,14 @@ weight: 1
 
 ### 集群选项
 
-| 标签 | 环境变量 | 说明 |
+| Flag | 环境变量 | 描述 |
 |------|----------------------|-------------|
 |  `--token value, -t` value  | `K3S_TOKEN`      | 用于将server或agent加入群集的共享secret。 |
 |  `--token-file` value    |  `K3S_TOKEN_FILE`   | 包含cluster-secret/token的文件      |
 
 ### 客户端选项
 
-| 标签 | 环境变量 | 说明 |
+| Flag | 环境变量 | 描述 |
 |------|----------------------|-------------|
 |  `--write-kubeconfig value, -o` value  | `K3S_KUBECONFIG_OUTPUT` | 将管理客户端的kubeconfig写入这个文件。 |
 |  `--write-kubeconfig-mode` value | `K3S_KUBECONFIG_MODE` | 使用这种[模式](https://en.wikipedia.org/wiki/Chmod)写入kubeconfig。允许写入kubeconfig文件的选项对于允许将K3s集群导入Rancher很有用。示例值为644。    | 
@@ -60,7 +60,7 @@ K3s agent选项是可以作为server选项的，因为server内部嵌入了agent
 
 ### Agent 节点
 
-| 标签 | 环境变量 | 说明 |
+| Flag | 环境变量 | 描述 |
 |------|----------------------|-------------|
 |   `--node-name` value      | `K3S_NODE_NAME`        | 节点名称       |
 |   `--with-node-id`     |  N/A           | 将ID附加到节点名称         | (agent/node) 
@@ -69,7 +69,7 @@ K3s agent选项是可以作为server选项的，因为server内部嵌入了agent
 
 ### Agent 运行时
 
-| 标签 | 默认 | 说明 |
+| Flag |  默认值 | 描述 |
 |------|---------|-------------|
 |   `--docker`  |  N/A            |  用docker代替containerd            |     (agent/runtime) 
 |  `--container-runtime-endpoint` value  | N/A   | 禁用嵌入式containerd，使用替代的CRI实现。 |
@@ -80,7 +80,7 @@ K3s agent选项是可以作为server选项的，因为server内部嵌入了agent
 
 Agent选项之所以存在，是因为server内嵌了agent进程
 
-| 标签 | 环境变量 | 说明 |
+| Flag | 环境变量 | 描述 |
 |------|----------------------|-------------|
 |   `--node-ip value, -i` value  | N/A         | 为节点发布的IP地址     |
 |   `--node-external-ip` value   |  N/A        | 对外发布节点的IP地址    | 
@@ -92,7 +92,7 @@ Agent选项之所以存在，是因为server内嵌了agent进程
 
 ### 日志
 
-| 标签 | 默认 | 说明 |
+| Flag |  默认值 | 描述 |
 |------|---------|-------------|
 | `-v` value | 0  |  日志级别详细程度的数字 |
 | `--vmodule` value | N/A | 以逗号分隔的pattern=N设置列表，用于文件过滤的日志记录 |
@@ -102,7 +102,7 @@ Agent选项之所以存在，是因为server内嵌了agent进程
 
 ### 监听
 
-| 标签 | 默认 | 说明 |
+| Flag |  默认值 | 描述 |
 |------|---------|-------------|
 | `--bind-address` value | 0.0.0.0 | k3s绑定地址 |
 | `--https-listen-port` value | 6443 | HTTPS监听端口 |
@@ -112,13 +112,13 @@ Agent选项之所以存在，是因为server内嵌了agent进程
 
 ### Data
 
-| 标签 | 默认 | 说明 |
+| Flag |  默认值 | 描述 |
 |------|---------|-------------|
 | `--data-dir value, -d` value  | `/var/lib/rancher/k3s` 或 `${HOME}/.rancher/k3s` 如果不是root用户） | 存放数据的目录 |
 
 ### 网络
 
-| 标签 | 默认 | 说明 |
+| Flag |  默认值 | 描述 |
 |------|---------|-------------|
 | `--cluster-cidr` value | "10.42.0.0/16"         |  用于Pod IP的网络CIDR        | 
 |  `--service-cidr` value | "10.43.0.0/16"         | 用于service IP的网络CIDR       |
@@ -126,9 +126,9 @@ Agent选项之所以存在，是因为server内嵌了agent进程
 |  `--cluster-domain` value  | "cluster.local"        | 集群域名       | 
 |  `--flannel-backend` value   | "vxlan"      | 'none', 'vxlan', 'ipsec', 'host-gw', 或 'wireguard'中的一个       |
 
-### 自定义选项
+### 定制标志
 
-| 标签 |  说明 |
+| Flag |  描述 |
 |------|--------------|
 | `--kube-apiserver-arg` value | 自定义kube-apiserver进程的参数。 |
 | `--kube-scheduler-arg` value | 自定义kube-scheduler进程的参数。 |
@@ -137,29 +137,29 @@ Agent选项之所以存在，是因为server内嵌了agent进程
 
 ### 存储类
 
-| 标签 |  说明 |
+| Flag |  描述 |
 |------|--------------|
 |   `--default-local-storage-path` value  | 本地存储类的默认存储路径     |
 
 ### Kubernetes 组件
 
-| 标签 |  说明 |
+| Flag |  描述 |
 |------|--------------|
 |  `--disable` value    |  不需要部署的组件，删除任何已部署的组件 (有效项目：coredns, servicelb, traefik,local-storage, metrics-server)            |
 |   `--disable-scheduler`  | 禁用Kubernetes默认调度器            | 
 |   `--disable-cloud-controller`   | 禁用k3s默认云控制管理器           | 
 |   `--disable-network-policy`  | 禁用K3S默认网络策略控制器            | 
 
-### Kubernetes进程自定义标签
+### Kubernetes进程定制标志
 
-| 标签 |  说明 |
+| Flag |  描述 |
 |------|--------------|
 |  `--kubelet-arg` value      |  自定义kubelet进程的参数              |
 |  `--kube-proxy-arg` value    |   自定义kube-proxy进程的参数           |
 
 ### 实验性选项
 
-| 标签 | 环境变量 | 说明 |
+| Flag | 环境变量 | 描述 |
 |------|----------------------|-------------|
 |   `--rootless`   |  N/A           |  运行 rootless           |    (experimental) 
 |   `--agent-token` value      | `K3S_AGENT_TOKEN`      |  用于将agent加入集群但不用于server的共享密钥      |
@@ -171,7 +171,7 @@ Agent选项之所以存在，是因为server内嵌了agent进程
 
 ### 废弃的选项
 
-| 标签 | 环境变量 | 说明 |
+| Flag | 环境变量 | 描述 |
 |------|----------------------|-------------|
 |  `--no-flannel`    |   N/A           |  使用 --flannel-backend=none       |
 |   `--no-deploy` value   | N/A             | 不需要部署的组件 (有效选项: coredns, servicelb, traefik, local-storage, metrics-server) |
