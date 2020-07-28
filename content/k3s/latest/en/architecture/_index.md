@@ -1,59 +1,59 @@
 ---
-title: Architecture
+title: 架构
 weight: 1
 ---
 
-This page describes the architecture of a high-availability K3s server cluster and how it differs from a single-node server cluster.
+本页介绍了高可用K3s集群的架构，以及它与单节点集群的不同之处。
 
-It also describes how agent nodes are registered with K3s servers.
+它还描述了如何在K3s server上注册agent节点。
 
-A server node is defined as a machine (bare-metal or virtual) running the `k3s server` command. A worker node is defined as a machine running the `k3s agent` command.
+K3s server节点被定义为运行`k3s server`命令的机器（裸机或虚拟机）。工作节点定义为运行`k3s agent`命令的机器。
 
-This page covers the following topics:
+本页涉及以下主题：
 
-- [Single-server setup with an embedded database](#single-server-setup-with-an-embedded-db)
-- [High-availability K3s server with an external database](#high-availability-k3s-server-with-an-external-db)
-  - [Fixed registration address for agent nodes](#fixed-registration-address-for-agent-nodes)
-- [How agent node registration works](#how-agent-node-registration-works)
-- [Automatically deployed manifests](#automatically-deployed-manifests)
+- [具有嵌入式数据库的单节点server设置](./../advanced/_index.md#single-server-setup-with-an-embedded-db)
+- [具有外部数据库的高可用K3s server](#high-availability-k3s-server-with-an-external-db)
+   - [固定agent节点的注册地址](#fixed-registration-address-for-agent-nodes)
+- [Agent节点如何注册](#how-agent-node-registration-works)
+- [自动部署的清单](#automatically-deployed-manifests)
 
-# Single-server Setup with an Embedded DB
+# 具有嵌入式数据库的单节点server设置
 
-The following diagram shows an example of a cluster that has a single-node K3s server with an embedded SQLite database.
+下图显示了一个集群的例子，该集群有一个内嵌SQLite数据库的单节点K3s server。
 
-In this configuration, each agent node is registered to the same server node. A K3s user can manipulate Kubernetes resources by calling the K3s API on the server node.
+在这种配置中，每个agent节点都注册到同一个server节点。K3s用户可以通过调用server节点上的K3s API来操作Kubernetes资源。
 
-<figcaption>K3s Architecture with a Single Server</figcaption>
+<figcaption>单节点k3s server的架构</figcaption>
 ![Architecture]({{<baseurl>}}/img/rancher/k3s-architecture-single-server.png)
 
-# High-Availability K3s Server with an External DB
+# 具有外部数据库的高可用K3s server
 
-Single server clusters can meet a variety of use cases, but for environments where uptime of the Kubernetes control plane is critical, you can run K3s in an HA configuration. An HA K3s cluster is comprised of:
+单节点k3s集群可以满足各种用例，但对于Kubernetes控制平面的正常运行至关重要的环境，您可以在HA配置中运行K3s。一个HA K3s集群由以下几个部分组成:
 
-* Two or more **server nodes** that will serve the Kubernetes API and run other control plane services
-* An **external datastore** (as opposed to the embedded SQLite datastore used in single-server setups)
+* 两个或更多`server节点`将为Kubernetes API提供服务并运行其他控制平面服务
+* `外部数据存储`（与单节点k3s设置中使用的嵌入式SQLite数据存储相反）
 
-<figcaption>K3s Architecture with a High-availability Server</figcaption>
+<figcaption>K3s高可用架构</figcaption>
 ![Architecture]({{<baseurl>}}/img/rancher/k3s-architecture-ha-server.png)
 
-### Fixed Registration Address for Agent Nodes
+### 固定agent节点的注册地址
 
-In the high-availability server configuration, each node must also register with the Kubernetes API by using a fixed registration address, as shown in the diagram below.
+在高可用k3s server配置中，每个节点还必须使用固定的注册地址向Kubernetes API注册，如下图所示：
 
-After registration, the agent nodes establish a connection directly to one of the server nodes.
+注册后，agent节点直接与其中一个server节点建立连接。
 
 ![k3s HA]({{<baseurl>}}/img/k3s/k3s-production-setup.svg)
 
-# How Agent Node Registration Works
+# Agent节点如何注册
 
-Agent nodes are registered with a websocket connection initiated by the `k3s agent` process, and the connection is maintained by a client-side load balancer running as part of the agent process.
+Agent节点用`k3s agent`进程发起的websocket连接注册，连接由作为代理进程一部分运行的客户端负载均衡器维护。
 
-Agents will register with the server using the node cluster secret along with a randomly generated password for the node, stored at `/etc/rancher/node/password`. The server will store the passwords for individual nodes at `/var/lib/rancher/k3s/server/cred/node-passwd`, and any subsequent attempts must use the same password.
+Agent节点将使用节点群集密钥以及在`/etc/rancher/node/password`中存储的随机生成的节点密码向服务器注册。服务器会将每个节点的密码存储在`/var/lib/rancher/k3s/server/cred/node-passwd`中，任何后续尝试都必须使用相同的密码。
 
-If the `/etc/rancher/node` directory of an agent is removed, the password file should be recreated for the agent, or the entry removed from the server.
+如果删除了agent的`/etc/rancher/node`目录，则应为该agent重新创建密码文件，或者从server中删除该条目。
 
-A unique node ID can be appended to the hostname by launching K3s servers or agents using the `--with-node-id` flag.
+通过使用`--with-node-id`标志启动K3s server或agent，可以将唯一的节点ID附加到主机名。
 
-# Automatically Deployed Manifests
+# 自动部署的清单
 
-The [manifests](https://github.com/rancher/k3s/tree/master/manifests) located at the directory path `/var/lib/rancher/k3s/server/manifests` are bundled into the K3s binary at build time.
+位于目录路径`/var/lib/rancher/k3s/server/manifests` 的清单在构建时被捆绑到K3s二进制文件中。

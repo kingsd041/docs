@@ -1,32 +1,32 @@
 ---
-title: "Quick-Start Guide"
+title: "快速入门指南"
 weight: 10
 ---
 
-This guide will help you quickly launch a cluster with default options. The [installation section](../installation) covers in greater detail how K3s can be set up.
+本指南将帮助您使用默认选项快速启动集群。安装部分将详细介绍如何设置K3s。
 
-For information on how K3s components work together, refer to the [architecture section.]({{<baseurl>}}/k3s/latest/en/architecture/#high-availability-with-an-external-db)
+有关K3s组件如何协同工作的信息，请参阅[架构部分]({{<baseurl>}}/k3s/latest/en/architecture/#high-availability-with-an-external-db)。
 
-> New to Kubernetes? The official Kubernetes docs already have some great tutorials outlining the basics [here](https://kubernetes.io/docs/tutorials/kubernetes-basics/).
+> Kubernetes的新手？ Kubernetes官方文档已经有一些很棒的教程，在[这里](https://kubernetes.io/docs/tutorials/kubernetes-basics/)概述了基础知识。
 
-Install Script
+安装脚本
 --------------
-K3s provides an installation script that is a convenient way to install it as a service on systemd or openrc based systems. This script is available at https://get.k3s.io. To install K3s using this method, just run:
+K3s提供了一个安装脚本，可以方便的在systemd或openrc的系统上将其作为服务安装。这个脚本可以在https://get.k3s.io获得。要使用这种方法安装K3s，只需运行。
 ```bash
 curl -sfL https://get.k3s.io | sh -
 ```
 
-After running this installation:
+运行此安装后:
 
-* The K3s service will be configured to automatically restart after node reboots or if the process crashes or is killed
-* Additional utilities will be installed, including `kubectl`, `crictl`, `ctr`, `k3s-killall.sh`, and `k3s-uninstall.sh`
-* A [kubeconfig](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/) file will be written to `/etc/rancher/k3s/k3s.yaml` and the kubectl installed by K3s will automatically use it
+* K3s服务将被配置为在节点重启后或进程崩溃或被杀死时自动重启。
+* 将安装其他实用程序，包括`kubectl`, `crictl`, `ctr`, `k3s-killall.sh` 和 `k3s-uninstall.sh`
+* 将[kubeconfig](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/)文件写入到`/etc/rancher/k3s/k3s.yaml`，由K3s安装的kubectl将自动使用该文件
 
-To install on worker nodes and add them to the cluster, run the installation script with the `K3S_URL` and `K3S_TOKEN` environment variables. Here is an example showing how to join a worker node:
+要在工作节点上安装并将它们添加到集群，请使用`K3S_URL`和`K3S_TOKEN`环境变量运行安装脚本。这是显示如何加入工作者节点的示例：
 
 ```bash
 curl -sfL https://get.k3s.io | K3S_URL=https://myserver:6443 K3S_TOKEN=mynodetoken sh -
 ```
-Setting the `K3S_URL` parameter causes K3s to run in worker mode. The K3s agent will register with the K3s server listening at the supplied URL. The value to use for `K3S_TOKEN` is stored at `/var/lib/rancher/k3s/server/node-token` on your server node.
+设置`K3S_URL`参数会使K3s以worker模式运行。K3s agent将在所提供的URL上向监听的K3s服务器注册。`K3S_TOKEN`使用的值存储在你的服务器节点上的`/var/lib/rancher/k3s/server/node-token`。
 
-Note: Each machine must have a unique hostname. If your machines do not have unique hostnames, pass the `K3S_NODE_NAME` environment variable and provide a value with a valid and unique hostname for each node.
+注意：每台计算机必须具有唯一的主机名。如果您的计算机没有唯一的主机名，请传递`K3S_NODE_NAME`环境变量，并为每个节点提供一个有效且唯一的主机名。

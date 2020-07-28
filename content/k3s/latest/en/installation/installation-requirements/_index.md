@@ -1,78 +1,78 @@
 ---
-title: Installation Requirements
+title: 安装要求
 weight: 1
 aliases:
   - /k3s/latest/en/installation/node-requirements/
 ---
 
-K3s is very lightweight, but has some minimum requirements as outlined below.
+K3s非常轻巧，但有一些最低要求，如下所述。
 
-Whether you're configuring a K3s cluster to run in a Docker or Kubernetes setup, each node running K3s should meet the following minimum requirements. You may need more resources to fit your needs.
+无论您是将K3s集群配置为在Docker还是Kubernetes设置中运行，运行K3s的每个节点都应该满足以下最低要求。你可能需要更多的资源来满足你的需求。
 
-## Prerequisites
+## 先决条件
 
-Two nodes cannot have the same hostname.
+两个节点不能有相同的主机名。
 
-If all your nodes have the same hostname, use the `--with-node-id` option to append a random suffix for each node, or otherwise devise a unique name to pass with `--node-name` or `$K3S_NODE_NAME` for each node you add to the cluster.
+如果您的所有节点都有相同的主机名，请使用`--with-node-id`选项为每个节点添加一个随机后缀，或者为您添加到集群的每个节点设计一个独特的名称，用`--node-name`或`$K3S_NODE_NAME`传递。
 
-## Operating Systems
+## 操作系统
 
-K3s should run on just about any flavor of Linux.
+K3s应该可以运行在几乎所有类型的Linux主机上。
 
-K3s is officially supported and tested on the following operating systems and their subsequent non-major releases:
+K3s在以下操作系统及其后续非主要版本中得到官方支持和测试：
 
 *    Ubuntu 16.04 (amd64)
 *    Ubuntu 18.04 (amd64)
 *    Raspbian Buster*
 
-\* If you are using **Raspbian Buster**, follow [these steps]({{<baseurl>}}/k3s/latest/en/advanced/#enabling-legacy-iptables-on-raspbian-buster) to switch to legacy iptables.
+\* 如果您使用的是 **Raspbian Buster**, 请按照[这些步骤]({{<baseurl>}}/k3s/latest/en/advanced/#enabling-legacy-iptables-on-raspbian-buster)切换到传统的 iptables。
 
-If you are using **Alpine Linux**, follow [these steps]({{<baseurl>}}/k3s/latest/en/advanced/#additional-preparation-for-alpine-linux-setup) for additional setup.
+如果您使用的是**Alpine Linux**，请按照[这些步骤]({{<baseurl>}}/k3s/latest/en/advanced/#additional-preparation-for-alpine-linux-setup)进行额外的设置。
 
-## Hardware
+## 硬件
 
-Hardware requirements scale based on the size of your deployments. Minimum recommendations are outlined here.
+硬件要求根据您部署的规模而变化。这里列出了最低建议。
 
-*    RAM: 512MB Minimum
-*    CPU: 1 Minimum
+*    内存: 最低512MB
+*    CPU: 最低1
 
-#### Disks
+#### 磁盘
 
-K3s performance depends on the performance of the database. To ensure optimal speed, we recommend using an SSD when possible. Disk performance will vary on ARM devices utilizing an SD card or eMMC.
+K3s的性能取决于数据库的性能。为了确保最佳速度，我们建议尽可能使用SSD。在使用SD卡或eMMC的ARM设备上，磁盘性能会有所不同。
 
-## Networking
+## 网络
 
-The K3s server needs port 6443 to be accessible by the nodes.
+K3s server需要6443端口才能被节点访问。
 
-The nodes need to be able to reach other nodes over UDP port 8472 when Flannel VXLAN is used. The node should not listen on any other port. K3s uses reverse tunneling such that the nodes make outbound connections to the server and all kubelet traffic runs through that tunnel. However, if you do not use Flannel and provide your own custom CNI, then port 8472 is not needed by K3s.
+当使用Flannel VXLAN时，节点需要能够通过UDP端口8472访问其他节点。节点不应该在其他端口上监听。K3s使用反向隧道，这样节点与服务器建立出站连接，所有的kubelet流量都通过该隧道运行。然而，如果你不使用Flannel并提供自己的自定义CNI，那么K3s就不需要8472端口。
 
-If you wish to utilize the metrics server, you will need to open port 10250 on each node.
+如果要使用`metrics server`，则需要在每个节点上打开端口10250端口。
 
-> **Important:** The VXLAN port on nodes should not be exposed to the world as it opens up your cluster network to be accessed by anyone. Run your nodes behind a firewall/security group that disables access to port 8472.
+> **重要:** 节点上的VXLAN端口不应暴露给全世界，因为它公开了群集网络，任何人都可以访问它。应在禁止访问端口8472的防火墙/安全组后面运行节点。
 
-<figcaption>Inbound Rules for K3s Server Nodes</figcaption>
+<figcaption>K3s Server节点的入站规则</figcaption>
 
-| Protocol | Port | Source | Description
+| 协议 | 端口 | 源 | 说明
 |-----|-----|----------------|---|
-| TCP | 6443 | K3s agent nodes | Kubernetes API
-| UDP | 8472 | K3s server and agent nodes | Required only for Flannel VXLAN
-| TCP | 10250 | K3s server and agent nodes | kubelet
+| TCP | 6443 | K3s agent 节点 | Kubernetes API
+| UDP | 8472 | K3s server 和 agent 节点 | R仅对Flannel VXLAN需要
+| TCP | 10250 | K3s server 和 agent 节点 | kubelet
 
-Typically all outbound traffic is allowed.
+通常情况下，所有出站流量都是允许的。
 
-## Large Clusters
+## 大型集群
 
-Hardware requirements are based on the size of your K3s cluster. For production and large clusters, we recommend using a high-availability setup with an external database. The following options are recommended for the external database in production:
+硬件要求取决于您的K3s群集的大小。对于生产和大型集群，我们建议使用具有外部数据库的高可用性设置。对于生产中的外部数据库，建议使用以下选项：
 
 - MySQL
 - PostgreSQL
 - etcd
 
-### CPU and Memory
+### CPU 和 内存
 
-The following are the minimum CPU and memory requirements for nodes in a high-availability K3s server:
+以下是高可用K3s server中节点的最低CPU和内存要求：
 
-| Deployment Size |   Nodes   | VCPUS |  RAM  |
+| 部署规模 |   节点   | VCPUS |  RAM  |
 |:---------------:|:---------:|:-----:|:-----:|
 |      Small      |  Up to 10 |   2   |  4 GB |
 |      Medium     | Up to 100 |   4   |  8 GB |
@@ -80,19 +80,19 @@ The following are the minimum CPU and memory requirements for nodes in a high-av
 |     X-Large     | Up to 500 |   16  | 32 GB |
 |     XX-Large    |   500+    |   32  | 64 GB |
 
-### Disks
+### 磁盘
 
-The cluster performance depends on database performance. To ensure optimal speed, we recommend always using SSD disks to back your K3s cluster. On cloud providers, you will also want to use the minimum size that allows the maximum IOPS.
+集群性能取决于数据库性能。为了确保最佳速度，我们建议始终使用SSD磁盘来支持你的K3s集群。在云提供商上，您还需要使用允许最大IOPS的最小size。
 
-### Network
+### 网络
 
-You should consider increasing the subnet size for the cluster CIDR so that you don't run out of IPs for the pods. You can do that by passing the `--cluster-cidr` option to K3s server upon starting.
+你应该考虑增加集群CIDR的子网大小，以免Pod的IP耗尽。你可以通过在启动时向K3s服务器传递`--cluster-cidr`选项来实现。
 
-### Database
+### 数据库
 
-K3s supports different databases including MySQL, PostgreSQL, MariaDB, and etcd, the following is a sizing guide for the database resources you need to run large clusters:
+K3s支持不同的数据库，包括MySQL、PostgreSQL、MariaDB和etcd，以下是运行大型集群所需的数据库资源的大小指南：
 
-| Deployment Size |   Nodes   | VCPUS |  RAM  |
+| 部署规模 |   节点   | VCPUS |  RAM  |
 |:---------------:|:---------:|:-----:|:-----:|
 |      Small      |  Up to 10 |   1   |  2 GB |
 |      Medium     | Up to 100 |   2   |  8 GB |

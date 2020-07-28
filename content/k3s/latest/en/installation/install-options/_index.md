@@ -1,73 +1,71 @@
 ---
-title: "Installation Options"
+title: "安装选项"
 weight: 20
 ---
 
-This page focuses on the options that can be used when you set up K3s for the first time:
+本页主要介绍首次设置K3s时可以使用的选项:
 
-- [Options for installation with script](#options-for-installation-with-script)
-- [Options for installation from binary](#options-for-installation-from-binary)
-- [Registration options for the K3s server](#registration-options-for-the-k3s-server)
-- [Registration options for the K3s agent](#registration-options-for-the-k3s-agent)
+- [使用脚本安装的选项](#options-for-installation-with-script)
+- [从二进制中安装的选项](#options-for-installation-from-binary)
+- [K3s server的注册选项](#registration-options-for-the-k3s-server)
+- [K3s agent的注册选项](#registration-options-for-the-k3s-agent)
 
-For more advanced options, refer to [this page.]({{<baseurl>}}/k3s/latest/en/advanced)
+更多高级选项，请参阅[本页。]({{<baseurl>}}/k3s/latest/en/advanced)
 
-> Throughout the K3s documentation, you will see some options that can be passed in as both command flags and environment variables. For help with passing in options, refer to [How to Use Flags and Environment Variables.]({{<baseurl>}}/k3s/latest/en/installation/install-options/how-to-flags)
+> 在整个K3s文档中，你会看到一些选项可以作为命令标志和环境变量传递进来。关于传入选项的帮助，请参考[如何使用标志和环境变量。]({{<baseurl>}}/k3s/latest/en/installation/install-options/how-to-flags)
 
-### Options for Installation with Script
+### 使用脚本安装的选项
 
-As mentioned in the [Quick-Start Guide]({{<baseurl>}}/k3s/latest/en/quick-start/), you can use the installation script available at https://get.k3s.io to install K3s as a service on systemd and openrc based systems.
+正如[快速启动指南]({{<baseurl>}}/k3s/latest/en/quick-start/)中提到的那样，你可以使用https://get.k3s.io 提供的安装脚本在基于systemd和openrc的系统上安装K3s作为服务。
 
-The simplest form of this command is as follows:
+该命令的最简单形式如下:
 ```sh
 curl -sfL https://get.k3s.io | sh -
 ```
 
-When using this method to install K3s, the following environment variables can be used to configure the installation:
+使用此方法安装K3s时，可使用以下环境变量来配置安装:
 
 | Environment Variable | Description |
 |-----------------------------|---------------------------------------------|
-| `INSTALL_K3S_SKIP_DOWNLOAD` | If set to true will not download K3s hash or binary. |
-| `INSTALL_K3S_SYMLINK` | By default will create symlinks for the kubectl, crictl, and ctr binaries if the commands do not already exist in path. If set to 'skip' will not create symlinks and 'force' will overwrite. |
-| `INSTALL_K3S_SKIP_ENABLE` | If set to true will not enable or start K3s service. |
-| `INSTALL_K3S_SKIP_START` | If set to true will not start K3s service. |
-| `INSTALL_K3S_VERSION` | Version of K3s to download from Github. Will attempt to download from the stable channel if not specified. |
-| `INSTALL_K3S_BIN_DIR` | Directory to install K3s binary, links, and uninstall script to, or use `/usr/local/bin` as the default. |
-| `INSTALL_K3S_BIN_DIR_READ_ONLY` | If set to true will not write files to `INSTALL_K3S_BIN_DIR`, forces setting `INSTALL_K3S_SKIP_DOWNLOAD=true`. |
-| `INSTALL_K3S_SYSTEMD_DIR` | Directory to install systemd service and environment files to, or use `/etc/systemd/system` as the default. |
-| `INSTALL_K3S_EXEC` | Command with flags to use for launching K3s in the service. If the command is not specified, and the `K3S_URL` is set, it will default to "agent." If `K3S_URL` not set, it will default to "server." For help, refer to [this example.]({{<baseurl>}}/k3s/latest/en/installation/install-options/how-to-flags/#example-b-install-k3s-exec) |
-| `INSTALL_K3S_NAME` | Name of systemd service to create, will default to 'k3s' if running k3s as a server and 'k3s-agent' if running k3s as an agent. If specified the name will be prefixed with 'k3s-'. |
-| `INSTALL_K3S_TYPE` | Type of systemd service to create, will default from the K3s exec command if not specified.
-| `INSTALL_K3S_CHANNEL_URL` | Channel URL for fetching K3s download URL. Defaults to https://update.k3s.io/v1-release/channels.
-| `INSTALL_K3S_CHANNEL` | Channel to use for fetching K3s download URL. Defaults to "stable". Options include: `stable`, `latest`, `testing`. |
+| `INSTALL_K3S_SKIP_DOWNLOAD` | 如果设置为 "true "将不会下载K3s的哈希值或二进制。 |
+| `INSTALL_K3S_SYMLINK` | 默认情况下，如果路径中不存在命令，将为kubectl、crictl和ctr二进制文件创建符号链接。如果设置为'skip'将不会创建符号链接，而'force'将覆盖。 |
+| `INSTALL_K3S_SKIP_ENABLE` | 如果设置为 "true"，将不启用或启动K3s服务。 |
+| `INSTALL_K3S_SKIP_START` | 如果设置为 "true "将不会启动K3s服务。 |
+| `INSTALL_K3S_VERSION` | 从Github下载K3s的版本。如果没有指定，将尝试从"stable"频道下载。 |
+| `INSTALL_K3S_BIN_DIR` | 安装K3s二进制文件、链接和卸载脚本的目录，或者使用`/usr/local/bin`作为默认目录。 |
+| `INSTALL_K3S_BIN_DIR_READ_ONLY` | 如果设置为true将不会把文件写入`INSTALL_K3S_BIN_DIR`，强制设置`INSTALL_K3S_SKIP_DOWNLOAD=true`。 |
+| `INSTALL_K3S_SYSTEMD_DIR` | 安装systemd服务和环境文件的目录，或者使用`/etc/systemd/system`作为默认目录。 |
+| `INSTALL_K3S_EXEC` | 带有标志的命令，用于在服务中启动K3s。如果未指定命令，并且设置了`K3S_URL`，它将默认为“agent”。如果未设置`K3S_URL`，它将默认为“server”。要获得帮助，请参考[此示例。]({{<baseurl>}}/k3s/latest/en/installation/install-options/how-to-flags/#example-b-install-k3s-exec) |
+| `INSTALL_K3S_NAME` | 要创建的systemd服务名称，如果以服务器方式运行k3s，则默认为'k3s'；如果以agent方式运行k3s，则默认为'k3s-agent'。如果指定了服务名，则服务名将以'k3s-'为前缀。 |
+| `INSTALL_K3S_TYPE` | 要创建的systemd服务类型，如果没有指定，将从K3s exec命令中默认。
+| `INSTALL_K3S_CHANNEL_URL` | 用于获取K3s下载网址的频道URL。默认为https://update.k3s.io/v1-release/channels。
+| `INSTALL_K3S_CHANNEL` | 用于获取K3s下载URL的通道。默认值为 "stable"。选项包括：`stable`, `latest`, `testing`。 |
 
+以 "K3S_"开头的环境变量将被保留，供systemd和openrc服务使用。
 
-Environment variables which begin with `K3S_` will be preserved for the systemd and openrc services to use.
+在没有明确设置exec命令的情况下设置`K3S_URL`，会将命令默认为 "agent"。
 
-Setting `K3S_URL` without explicitly setting an exec command will default the command to "agent".
+运行agent时还必须设置`K3S_TOKEN`。
 
-When running the agent `K3S_TOKEN` must also be set.
+# 从二进制中安装K3s
 
-# Installing K3s from the Binary
+如上所述，安装脚本主要是配置K3s作为服务运行。如果你选择不使用脚本，你可以通过从我们的[发布页面](https://github.com/rancher/k3s/releases/latest)下载二进制文件，将其放在你的路径上，然后执行它来运行K3s。K3s二进制支持以下命令：
 
-As stated, the installation script is primarily concerned with configuring K3s to run as a service. If you choose to not use the script, you can run K3s simply by downloading the binary from our [release page](https://github.com/rancher/k3s/releases/latest), placing it on your path, and executing it. The K3s binary supports the following commands:
-
-Command | Description
+命令 | 描述
 --------|------------------
-<span class='nowrap'>`k3s server`</span> | Run the K3s management server, which will also launch Kubernetes control plane components such as the API server, controller-manager, and scheduler.
-<span class='nowrap'>`k3s agent`</span> |  Run the K3s node agent. This will cause K3s to run as a worker node, launching the Kubernetes node services `kubelet` and `kube-proxy`.
-<span class='nowrap'>`k3s kubectl`</span> | Run an embedded [kubectl](https://kubernetes.io/docs/reference/kubectl/overview/) CLI. If the `KUBECONFIG` environment variable is not set, this will automatically attempt to use the config file that is created at `/etc/rancher/k3s/k3s.yaml` when launching a K3s server node.
-<span class='nowrap'>`k3s crictl`</span> | Run an embedded [crictl](https://github.com/kubernetes-sigs/cri-tools/blob/master/docs/crictl.md). This is a CLI for interacting with Kubernetes's container runtime interface (CRI). Useful for debugging.
-<span class='nowrap'>`k3s ctr`</span> | Run an embedded [ctr](https://github.com/projectatomic/containerd/blob/master/docs/cli.md). This is a CLI for containerd, the container daemon used by K3s. Useful for debugging.
-<span class='nowrap'>`k3s help`</span> | Shows a list of commands or help for one command
+<span class='nowrap'>`k3s server`</span> | 运行K3s server，它还将启动Kubernetes控制平面组件，如API server, controller-manager, 和 scheduler。
+<span class='nowrap'>`k3s agent`</span> |  运行K3s agent节点。这将使K3s作为工作节点运行，启动Kubernetes节点服务`kubelet`和`kube-proxy`。
+<span class='nowrap'>`k3s kubectl`</span> | 运行嵌入式[kubectl](https://kubernetes.io/docs/reference/kubectl/overview/) CLI。如果没有设置`KUBECONFIG`环境变量，当启动K3s服务器节点时，将自动尝试使用在`/etc/rancher/k3s/k3s.yaml`创建的配置文件。
+<span class='nowrap'>`k3s crictl`</span> | 运行一个嵌入式[crictl](https://github.com/kubernetes-sigs/cri-tools/blob/master/docs/crictl.md)。这是一个用于与Kubernetes的容器运行时接口（CRI）交互的CLI。对调试很有用。
+<span class='nowrap'>`k3s ctr`</span> | 运行一个嵌入式的[ctr](https://github.com/projectatomic/containerd/blob/master/docs/cli.md)。这是为containerd（K3s使用的容器守护进程）提供的CLI。对调试很有用。
+<span class='nowrap'>`k3s help`</span> | 显示一个命令的命令列表或帮助。
 
-The `k3s server` and `k3s agent` commands have additional configuration options that can be viewed with <span class='nowrap'>`k3s server --help`</span> or <span class='nowrap'>`k3s agent --help`</span>.
+`k3s server` 和 `k3s agent` 命令有额外的配置选项，可以通过 <span class='nowrap'>`k3s server --help`</span> 或 <span class='nowrap'>`k3s agent --help`</span> 查看.
 
-### Registration Options for the K3s Server
+### K3s Server的注册选项
 
-For details on configuring the K3s server, refer to the [server configuration reference.]({{<baseurl>}}/k3s/latest/en/installation/install-options/server-config)
+关于K3s server的详细配置，请参考[k3s server配置参考]({{<baseurl>}}/k3s/latest/en/installation/install-options/server-config)。
 
+### K3s agent的注册选项
 
-### Registration Options for the K3s Agent
-
-For details on configuring the K3s agent, refer to the [agent configuration reference.]({{<baseurl>}}/k3s/latest/en/installation/install-options/agent-config)
+关于K3s agent的配置详情，请参考[k3s agent配置参考]({{<baseurl>}}/k3s/latest/en/installation/install-options/agent-config)

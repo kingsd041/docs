@@ -1,41 +1,41 @@
 ---
-title: "K3s - Lightweight Kubernetes"
+title: "K3s - 轻量级 Kubernetes"
 shortTitle: K3s
 name: "menu"
 ---
 
-Lightweight Kubernetes. Easy to install, half the memory, all in a binary of less than 100 MB.
+轻量级Kubernetes。安装简单，内存只有一半，所有的二进制都不到100MB。
 
-Great for:
+适用于:
 
-* Edge
-* IoT
+* 边缘计算-Edge
+* 物联网-IoT
 * CI
 * Development
 * ARM
-* Embedding K8s
+* 嵌入K8s
 * Situations where a PhD in K8s clusterology is infeasible
 
-# What is K3s?
+# 什么是K3s?
 
-K3s is a fully compliant Kubernetes distribution with the following enhancements:
+K3s是一个完全符合Kubernetes的发行版，有以下增强功能。
 
-* Packaged as a single binary.
-* Lightweight storage backend based on sqlite3 as the default storage mechanism. etcd3, MySQL, Postgres also still available.
-* Wrapped in simple launcher that handles a lot of the complexity of TLS and options.
-* Secure by default with reasonable defaults for lightweight environments.
-* Simple but powerful "batteries-included" features have been added, such as: a local storage provider, a service load balancer, a Helm controller, and the Traefik ingress controller.
-* Operation of all Kubernetes control plane components is encapsulated in a single binary and process. This allows K3s to automate and manage complex cluster operations like distributing certificates.
-* External dependencies have been minimized (just a modern kernel and cgroup mounts needed). K3s packages required dependencies, including:
+* 打包为单个二进制文件。
+* 基于sqlite3的轻量级存储后端作为默认存储机制。 etcd3，MySQL，Postgres仍然可用。
+* 封装在简单的启动程序中，该启动程序处理很多复杂的TLS和选项。
+* 默认情况下是安全的，对轻量级环境有合理的默认值。
+* 添加了简单但功能强大的“batteries-included”功能，例如：本地存储提供程序，服务负载均衡器，Helm controller和Traefik ingress controller。
+* 所有Kubernetes控制平面组件的操作都封装在单个二进制文件和进程中。这使K3s可以自动化和管理复杂的群集操作，例如分发证书。
+* 外部依赖性已最小化（仅需要现代内核和cgroup挂载）。 K3s软件包需要依赖项，包括：
     * containerd
     * Flannel
     * CoreDNS
     * CNI
-    * Host utilities (iptables, socat, etc)
+    * 主机实用程序 (iptables, socat, etc)
     * Ingress controller (traefik)
-    * Embedded service loadbalancer
-    * Embedded network policy controller
+    * 嵌入式 service loadbalancer
+    * 嵌入式 network policy controller
 
-# What's with the name?
+# 为什么叫K3s?
 
-We wanted an installation of Kubernetes that was half the size in terms of memory footprint. Kubernetes is a 10-letter word stylized as K8s. So something half as big as Kubernetes would be a 5-letter word stylized as K3s. There is no long form of K3s and no official pronunciation.
+我们希望安装的Kubernetes在内存占用方面只是一半的大小。Kubernetes是一个10个字母的单词，简写为K8s。所以，有Kubernetes一半大的东西就是一个5个字母的单词，简写为K3s。K3s没有全称，也没有官方的发音。

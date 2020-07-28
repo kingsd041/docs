@@ -1,22 +1,25 @@
 ---
-title: "Advanced Options and Configuration"
+title: "高级选项和配置"
 weight: 45
 aliases:
   - /k3s/latest/en/running/
   - /k3s/latest/en/configuration/
 ---
 
-This section contains advanced information describing the different ways you can run and manage K3s:
+本节包含一些高级信息，描述了你可以运行和管理K3s的不同方式。
 
-- [Certificate rotation](#certificate-rotation)
-- [Auto-deploying manifests](#auto-deploying-manifests)
-- [Using Docker as the container runtime](#using-docker-as-the-container-runtime)
+- [Certificate Rotation](#certificate-rotation)
+- [Auto-Deploying Manifests](#auto-deploying-manifests)
+- [Using Docker as the Container Runtime](#using-docker-as-the-container-runtime)
+    - [Optional: Use crictl with Docker](#optional-use-crictl-with-docker)
 - [Configuring containerd](#configuring-containerd)
 - [Secrets Encryption Config (Experimental)](#secrets-encryption-config-experimental)
 - [Running K3s with RootlessKit (Experimental)](#running-k3s-with-rootlesskit-experimental)
-- [Node labels and taints](#node-labels-and-taints)
-- [Starting the server with the installation script](#starting-the-server-with-the-installation-script)
-- [Additional preparation for Alpine Linux setup](#additional-preparation-for-alpine-linux-setup)
+    - [Known Issues with RootlessKit](#known-issues-with-rootlesskit)
+    - [Running Servers and Agents with Rootless](#running-servers-and-agents-with-rootless)
+- [Node Labels and Taints](#node-labels-and-taints)
+- [Starting the Server with the Installation Script](#starting-the-server-with-the-installation-script)
+- [Additional Preparation for Alpine Linux Setup](#additional-preparation-for-alpine-linux-setup)
 - [Running K3d (K3s in Docker) and docker-compose](#running-k3d-k3s-in-docker-and-docker-compose)
 - [Enabling legacy iptables on Raspbian Buster](#enabling-legacy-iptables-on-raspbian-buster)
 - [Experimental SELinux Support](#experimental-selinux-support)

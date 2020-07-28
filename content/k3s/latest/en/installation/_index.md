@@ -1,18 +1,18 @@
 ---
-title: "Installation"
+title: "安装"
 weight: 20
 ---
 
-This section contains instructions for installing K3s in various environments. Please ensure you have met the [Installation Requirements]({{< baseurl >}}/k3s/latest/en/installation/installation-requirements/) before you begin installing K3s.
+本节包含了在各种环境下安装K3s的说明，请在开始安装K3s之前，确保满足[安装要求]({{< baseurl >}}/k3s/latest/en/installation/installation-requirements/)
 
-[Installation and Configuration Options]({{<baseurl>}}/k3s/latest/en/installation/install-options/) provides guidance on the options available to you when installing K3s.
+[安装和配置选项]({{<baseurl>}}/k3s/latest/en/installation/install-options/) 提供了安装K3s时可用选项的指导。
 
-[High Availability with an External DB]({{<baseurl>}}/k3s/latest/en/installation/ha/) details how to set up an HA K3s cluster backed by an external datastore such as MySQL, PostgreSQL, or etcd.
+[外部数据库的高可用]({{<baseurl>}}/k3s/latest/en/installation/ha/)详细介绍了如何设置一个由外部数据存储（如MySQL、PostgreSQL或etcd）支持的K3s HA集群。
 
-[High Availability with Embedded DB (Experimental)]({{<baseurl>}}/k3s/latest/en/installation/ha-embedded/) details how to set up an HA K3s cluster that leverages a built-in distributed database.
+[嵌入式DB的高可用（实验）]({{<baseurl>}}/k3s/latest/en/installation/ha-embedded/)详细介绍了如何建立一个利用内置分布式数据库的K3s HA集群。
 
-[Air-Gap Installation]({{<baseurl>}}/k3s/latest/en/installation/airgap/) details how to set up K3s in environments that do not have direct access to the Internet.
+[离线安装]({{<baseurl>}}/k3s/latest/en/installation/airgap/) 详细介绍了如何在不能直接接入互联网的环境中设置K3s。
 
-### Uninstalling
+### 卸载K3s
 
-If you installed K3s with the help of the `install.sh` script, an uninstall script is generated during installation. The script is created on your node at `/usr/local/bin/k3s-uninstall.sh` (or as `k3s-agent-uninstall.sh`).
+如果你使用`install.sh`脚本安装了K3s，那么在安装过程中会生成一个卸载脚本。该脚本在您的节点上的`/usr/local/bin/k3s-uninstall.sh`上创建（或者是`k3s-agent-uninstall.sh`）。
