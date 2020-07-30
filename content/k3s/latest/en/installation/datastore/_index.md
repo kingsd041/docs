@@ -1,92 +1,92 @@
 ---
-title: "Cluster Datastore Options"
+title: "集群数据存储选项"
 weight: 50
 ---
 
-The ability to run Kubernetes using a datastore other than etcd sets K3s apart from other Kubernetes distributions. This feature provides flexibility to Kubernetes operators. The available datastore options allow you to select a datastore that best fits your use case. For example:
+使用etcd以外的数据存储运行Kubernetes的能力使K3s区别于其他Kubernetes发行版。该功能为Kubernetes操作者提供了灵活性。可用的数据存储选项允许您选择一个最适合您用例的数据存储。例如：
 
-* If your team doesn't have expertise in operating etcd, you can choose an enterprise-grade SQL database like MySQL or PostgreSQL
-* If you need to run a simple, short-lived cluster in your CI/CD environment, you can use the embedded SQLite database
-* If you wish to deploy Kubernetes on the edge and require a highly available solution but can't afford the operational overhead of managing a database at the edge, you can use K3s's embedded HA datastore built on top of DQLite (currently experimental)
+* 如果你的团队没有操作etcd的专业知识，可以选择MySQL或PostgreSQL等企业级SQL数据库。
+* 如果您需要在CI/CD环境中运行一个简单的、短暂的集群，您可以使用嵌入式SQLite数据库。
+* 如果您希望在边缘部署Kubernetes，并需要一个高可用的解决方案，但无法承担在边缘管理数据库的操作开销，您可以使用K3s建立在DQLite之上的嵌入式HA数据存储（目前是实验性的）。
 
-K3s supports the following datastore options:
+K3s支持以下数据存储选项：
 
-* Embedded [SQLite](https://www.sqlite.org/index.html)
-* [PostgreSQL](https://www.postgresql.org/) (certified against versions 10.7 and 11.5)
-* [MySQL](https://www.mysql.com/) (certified against version 5.7)
-* [MariaDB](https://mariadb.org/) (certified against version 10.3.20)
-* [etcd](https://etcd.io/) (certified against version 3.3.15)
-* Embedded [DQLite](https://dqlite.io/) for High Availability (experimental)
+* 嵌入式 [SQLite](https://www.sqlite.org/index.html)
+* [PostgreSQL](https://www.postgresql.org/) (经过认证的版本：10.7和11.5)
+* [MySQL](https://www.mysql.com/) (经过认证的版本：5.7)
+* [MariaDB](https://mariadb.org/) (经过认证的版本：10.3.20)
+* [etcd](https://etcd.io/) (经过认证的版本：3.3.15)
+* 嵌入式[DQLite](https://dqlite.io/)实现高可用 (实验性)
 
-### External Datastore Configuration Parameters
-If you wish to use an external datastore such as PostgreSQL, MySQL, or etcd you must set the `datastore-endpoint` parameter so that K3s knows how to connect to it. You may also specify parameters to configure the authentication and encryption of the connection. The below table summarizes these parameters, which can be passed as either CLI flags or environment variables.
+### 外部数据存储配置参数
+如果你想使用外部数据存储，如PostgreSQL、MySQL或etcd，你必须设置`datastore-endpoint`参数，以便K3s知道如何连接到它。你也可以指定参数来配置连接的认证和加密。下表总结了这些参数，它们可以作为CLI标志或环境变量传递。
 
-  CLI Flag | Environment Variable | Description
+  CLI Flag | 环境变量 | 描述
   ------------|-------------|------------------
- <span style="white-space: nowrap">`--datastore-endpoint`</span> | `K3S_DATASTORE_ENDPOINT` | Specify a PostgresSQL, MySQL, or etcd connection string. This is a string used to describe the connection to the datastore. The structure of this string is specific to each backend and is detailed below.
- <span style="white-space: nowrap">`--datastore-cafile`</span> | `K3S_DATASTORE_CAFILE` | TLS Certificate Authority (CA) file used to help secure communication with the datastore. If your datastore serves requests over TLS using a certificate signed by a custom certificate authority, you can specify that CA using this parameter so that the K3s client can properly verify the certificate. |                              
-|  <span style="white-space: nowrap">`--datastore-certfile`</span> | `K3S_DATASTORE_CERTFILE` | TLS certificate file used for client certificate based authentication to your datastore. To use this feature, your datastore must be configured to support client certificate based authentication. If you specify this parameter, you must also specify the `datastore-keyfile` parameter. |     
-|  <span style="white-space: nowrap">`--datastore-keyfile`</span> | `K3S_DATASTORE_KEYFILE` | TLS key file used for client certificate based authentication to your datastore. See the previous `datastore-certfile` parameter for more details. |
+ <span style="white-space: nowrap">`--datastore-endpoint`</span> | `K3S_DATASTORE_ENDPOINT` | 指定一个PostgresSQL、MySQL或etcd连接字符串。用于描述与数据存储的连接。这个字符串的结构是特定于每个后端的，详情如下。
+ <span style="white-space: nowrap">`--datastore-cafile`</span> | `K3S_DATASTORE_CAFILE` | TLS 证书颁发机构（CA）文件，用于帮助确保与数据存储的通信安全。如果你的数据存储通过TLS服务请求，使用由自定义证书颁发机构签署的证书，你可以使用这个参数指定该CA，这样K3s客户端就可以正确验证证书。 |                              
+|  <span style="white-space: nowrap">`--datastore-certfile`</span> | `K3S_DATASTORE_CERTFILE` | TLS 证书文件，用于对数据存储进行基于客户端证书的验证。要使用这个功能，你的数据存储必须被配置为支持基于客户端证书的认证。如果你指定了这个参数，你还必须指定`datastore-keyfile`参数。 |     
+|  <span style="white-space: nowrap">`--datastore-keyfile`</span> | `K3S_DATASTORE_KEYFILE` | TLS密钥文件，用于对数据存储进行基于客户端证书的认证。更多细节请参见前面的`datastore-certfile`参数。 |
 
-As a best practice we recommend setting these parameters as environment variables rather than command line arguments so that your database credentials or other sensitive information aren't exposed as part of the process info.
+作为最佳实践，我们建议将这些参数设置为环境变量，而不是命令行参数，这样你的数据库证书或其他敏感信息就不会作为进程信息的一部分暴露出来。
 
-### Datastore Endpoint Format and Functionality
-As mentioned, the format of the value passed to the `datastore-endpoint` parameter is dependent upon the datastore backend. The following details this format and functionality for each supported external datastore.
+### 数据存储端点格式和功能
+如前所述，传递给`datastore-endpoint`参数的值的格式取决于数据存储后端。下文详细介绍了每个支持的外部数据存储的格式和功能。
 
 {{% tabs %}}
 {{% tab "PostgreSQL" %}}
 
-In its most common form, the datastore-endpoint parameter for PostgreSQL has the following format:
+最常见的PostgreSQL数据存储端点的参数格式：
 
 `postgres://username:password@hostname:port/database-name`
 
-More advanced configuration parameters are available. For more information on these, please see https://godoc.org/github.com/lib/pq.
+更多的高级配置参数，请参见 https://godoc.org/github.com/lib/pq
 
-If you specify a database name and it does not exist, the server will attempt to create it.
+如果指定的数据库名称不存在，k3s server将尝试创建它。
 
-If you only supply `postgres://`  as the endpoint, K3s will attempt to do the following:
+如果你只提供`postgres://`作为端点，K3s将尝试做如下操作：
 
-* Connect to localhost using `postgres` as the username and password
-* Create a database named `kubernetes`
+* 使用`postgres`作为用户名和密码连接到localhost
+* 创建一个名为`kubernetes`的数据库
 
 
 {{% /tab %}}
 {{% tab "MySQL / MariaDB" %}}
 
-In its most common form, the `datastore-endpoint` parameter for MySQL and MariaDB has the following format:
+最常见的MySQL和MariaDB的`datastore-endpoint`参数格式如下：
 
 `mysql://username:password@tcp(hostname:3306)/database-name`
 
-More advanced configuration parameters are available. For more information on these, please see https://github.com/go-sql-driver/mysql#dsn-data-source-name
+更多的高级配置参数，请参见 https://github.com/go-sql-driver/mysql#dsn-data-source-name
 
-Note that due to a [known issue](https://github.com/rancher/k3s/issues/1093) in K3s, you cannot set the `tls` parameter. TLS communication is supported, but you cannot, for example, set this parameter to "skip-verify" to cause K3s to skip certificate verification.
+请注意，由于K3s中的一个[已知问题](https://github.com/rancher/k3s/issues/1093)，你无法设置`tls`参数。支持TLS通信，但你不能将这个参数设置为 "skip-verify "来使K3s跳过证书验证。
 
-If you specify a database name and it does not exist, the server will attempt to create it.
+如果指定的数据库名称不存在，k3s server将尝试创建它。
 
-If you only supply `mysql://` as the endpoint, K3s will attempt to do the following:
+如果你只提供`mysql://`作为端点，K3s将尝试做如下操作：
 
-* Connect to the MySQL socket at `/var/run/mysqld/mysqld.sock` using the `root` user and no password
-* Create a database with the name `kubernetes`
+* 使用root用户并且不使用密码连接到`/var/run/mysqld/mysqld.sock`上的MySQL套接字
+* 创建一个名为`kubernetes`的数据库
 
 
 {{% /tab %}}
 {{% tab "etcd" %}}
 
-In its most common form, the `datastore-endpoint` parameter for etcd has the following format:
+最常见的etcd的`datastore-endpoint`参数的格式如下:
 
 `https://etcd-host-1:2379,https://etcd-host-2:2379,https://etcd-host-3:2379`
 
-The above assumes a typical three node etcd cluster. The parameter can accept one more comma separated etcd URLs.
+以上假设是一个典型的三节点etcd集群。该参数可以再接受一个以逗号分隔的etcd URL。
 
 {{% /tab %}}
 {{% /tabs %}}
 
-<br/>Based on the above, the following example command could be used to launch a server instance that connects to a PostgresSQL database named k3s:
+<br/>基于上述情况，可以使用下面的示例命令来启动一个连接到名为k3s的PostgresSQL数据库的k3s server实例:
 ```
 K3S_DATASTORE_ENDPOINT='postgres://username:password@hostname:5432/k3s' k3s server
 ```
 
-And the following example could be used to connect to a MySQL database using client certificate authentication:
+而下面的例子可以用来使用客户端证书认证连接到MySQL数据库:
 ```
 K3S_DATASTORE_ENDPOINT='mysql://username:password@tcp(hostname:3306)/k3s' \
 K3S_DATASTORE_CERTFILE='/path/to/client.crt' \
@@ -94,5 +94,5 @@ K3S_DATASTORE_KEYFILE='/path/to/client.key' \
 k3s server
 ```
 
-### Embedded DQLite for HA (Experimental)
-K3s's use of DQLite is similar to its use of SQLite. It is simple to set up and manage. As such, there is no external configuration or additional steps to take in order to use this option. Please see [High Availability with Embedded DB (Experimental)]({{<baseurl>}}/k3s/latest/en/installation/ha-embedded/) for instructions on how to run with this option.
+### 适用于HA的嵌入式DQLite (实验)
+K3s使用DQLite类似于使用SQLite。它的设置和管理都很简单。因此，使用这个选项，不需要进行外部配置或额外的步骤。请参阅[嵌入式数据库的高可用(实验性)]({{<baseurl>}}/k3s/latest/en/installation/ha-embedded/)，了解如何使用该选项运行。
