@@ -1,27 +1,27 @@
 ---
-title: "Private Registry Configuration"
+title: "私有注册表配置"
 weight: 55
 ---
-_Available as of v1.0.0_
+_v1.0.0 开始可用_
 
-Containerd can be configured to connect to private registries and use them to pull private images on the node.
+可以配置Containerd连接到私有注册表，并使用它们在节点上拉取私有镜像。
 
-Upon startup, K3s will check to see if a `registries.yaml` file exists at `/etc/rancher/k3s/` and instruct containerd to use any registries defined in the file. If you wish to use a private registry, then you will need to create this file as root on each node that will be using the registry.
+启动时，K3s会检查`/etc/rancher/k3s/`中是否存在`registries.yaml`文件，并指示containerd使用文件中定义的注册表。如果你想使用一个私有的注册表，那么你需要在每个使用注册表的节点上以root身份创建这个文件。
 
-Note that server nodes are schedulable by default. If you have not tainted the server nodes and will be running workloads on them, please ensure you also create the `registries.yaml` file on each server as well.
+请注意，server节点默认是可以调度的。如果你没有在server节点上设置污点，那么将在它们上运行工作负载，请确保在每个server节点上创建`registries.yaml`文件。
 
-Configuration in containerd can be used to connect to a private registry with a TLS connection and with registries that enable authentication as well. The following section will explain the `registries.yaml` file and give different examples of using private registry configuration in K3s.
+Containerd中的配置可以用于通过TLS连接到私有注册表，也可以与启用验证的注册表连接。下一节将解释`registries.yaml`文件，并给出在K3s中使用私有注册表配置的不同例子。
 
-# Registries Configuration File
+# 注册表配置文件
 
-The file consists of two main sections:
+该文件由两大部分组成:
 
 - mirrors
 - configs
 
 ### Mirrors
 
-Mirrors is a directive that defines the names and endpoints of the private registries, for example:
+Mirrors是一个用于定义专用注册表的名称和endpoint的指令，例如。
 
 ```
 mirrors:
@@ -30,29 +30,29 @@ mirrors:
       - "https://mycustomreg.com:5000"
 ```
 
-Each mirror must have a name and set of endpoints. When pulling an image from a registry, containerd will try these endpoint URLs one by one, and use the first working one.
+每个mirror必须有一个名称和一组endpoint。当从注册表中拉取镜像时，containerd会逐一尝试这些endpoint URL，并使用第一个可用的endpoint。
 
 ### Configs
 
-The configs section defines the TLS and credential configuration for each mirror. For each mirror you can define `auth` and/or `tls`. The TLS part consists of:
+Configs部分定义了每个mirror的TLS和证书配置。对于每个mirror，你可以定义`auth`和/或`tls`。TLS部分包括：
 
-Directive | Description
+指令 | 描述
 ----------|------------
-`cert_file` | The client certificate path that will be used to authenticate with the registry
-`key_file` | The client key path that will be used to authenticate with the registry
-`ca_file` | Defines the CA certificate path to be used to verify the registry's server cert file
+`cert_file` | 用来与注册表进行验证的客户证书路径
+`key_file` | 用来验证注册表的客户端密钥路径
+`ca_file` | 定义用于验证注册表服务器证书文件的CA证书路径
 
-The credentials consist of either username/password or authentication token:
+凭证由用户名/密码或认证token组成:
 
-- username: user name of the private registry basic auth
-- password: user password of the private registry basic auth
-- auth: authentication token of the private registry basic auth
+- username: 注册表身份验证的用户名
+- password: 注册表身份验证的用户密码
+- auth: 注册表auth的认证token
 
-Below are basic examples of using private registries in different modes:
+以下是在不同模式下使用私有注册表的基本例子:
 
-### With TLS
+### 使用 TLS
 
-Below are examples showing how you may configure `/etc/rancher/k3s/registries.yaml` on each node when using TLS.
+下面的例子展示了当你使用TLS时，如何在每个节点上配置`/etc/rancher/k3s/registries.yaml`。
 
 {{% tabs %}}
 {{% tab "With Authentication" %}}
@@ -65,12 +65,12 @@ mirrors:
 configs:
   "mycustomreg:5000":
     auth:
-      username: xxxxxx # this is the registry username
-      password: xxxxxx # this is the registry password
+      username: xxxxxx # 这是私有注册表的用户名
+      password: xxxxxx # 这是私有注册表的密码
     tls:
-      cert_file: # path to the cert file used in the registry
-      key_file:  # path to the key file used in the registry
-      ca_file:   # path to the ca file used in the registry
+      cert_file: # 注册表中使用的cert文件的路径。
+      key_file:  # 注册表中使用的key文件的路径。
+      ca_file:   # 注册表中使用的ca文件的路径。
 ```
 
 {{% /tab %}}
@@ -84,17 +84,17 @@ mirrors:
 configs:
   "mycustomreg:5000":
     tls:
-      cert_file: # path to the cert file used in the registry
-      key_file:  # path to the key file used in the registry
-      ca_file:   # path to the ca file used in the registry
+      cert_file: # 注册表中使用的cert文件的路径。
+      key_file:  # 注册表中使用的key文件的路径。
+      ca_file:   # 注册表中使用的ca文件的路径。
 ```
 
 {{% /tab %}}
 {{% /tabs %}}
 
-### Without TLS
+### 不使用 TLS
 
-Below are examples showing how you may configure `/etc/rancher/k3s/registries.yaml` on each node when _not_ using TLS.
+下面的例子展示了当你不使用TLS时，如何在每个节点上配置`/etc/rancher/k3s/registries.yaml`。
 
 {{% tabs %}}
 {{% tab "With Authentication" %}}
@@ -107,8 +107,8 @@ mirrors:
 configs:
   "mycustomreg:5000":
     auth:
-      username: xxxxxx # this is the registry username
-      password: xxxxxx # this is the registry password
+      username: xxxxxx # 这是私有注册表的用户名
+      password: xxxxxx # 这是私有注册表的密码
 ```
 
 {{% /tab %}}
@@ -124,21 +124,21 @@ mirrors:
 {{% /tab %}}
 {{% /tabs %}}
 
-> In case of no TLS communication, you need to specify `http://` for the endpoints, otherwise it will default to https.
+> 在没有TLS通信的情况下，需要为endpoints指定`http://`，否则将默认为https。
  
-In order for the registry changes to take effect, you need to restart K3s on each node.
+为了使注册表更改生效，你需要重新启动每个节点上的K3s。
 
-# Adding Images to the Private Registry
+# 添加镜像到私有注册表
 
-First, obtain the k3s-images.txt file from GitHub for the release you are working with.
-Pull the K3s images listed on the k3s-images.txt file from docker.io
+首先，从GitHub上获取你正在使用的版本的k3s-images.txt文件。
+从docker.io中拉取k3s-images.txt文件中列出的K3s镜像。
 
-Example: `docker pull docker.io/rancher/coredns-coredns:1.6.3`
+例: `docker pull docker.io/rancher/coredns-coredns:1.6.3`
 
-Then, retag the images to the private registry.
+然后，将镜像重新标记成私有注册表。
 
-Example: `docker tag coredns-coredns:1.6.3 mycustomreg:5000/coredns-coredns`
+例: `docker tag coredns-coredns:1.6.3 mycustomreg:5000/coredns-coredns`
 
-Last, push the images to the private registry.
+最后，将镜像推送到私有注册表。
 
-Example: `docker push mycustomreg:5000/coredns-coredns`
+例: `docker push mycustomreg:5000/coredns-coredns`
