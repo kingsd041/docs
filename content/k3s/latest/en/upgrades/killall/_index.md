@@ -1,15 +1,15 @@
 ---
-title: The k3s-killall.sh script
+title: k3s-killall.sh 脚本
 weight: 4
 ---
 
-To allow high availability during upgrades, the K3s containers continue running when the K3s service is stopped.
+为了在升级期间实现高可用性，当K3s服务停止时，K3s容器会继续运行。
 
-To stop all of the K3s containers and reset the containerd state, the `k3s-killall.sh` script can be used.
+要停止所有的K3s容器并重置容器的状态，可以使用`k3s-killall.sh`脚本。
 
-The killall script cleans up containers, K3s directories, and networking components while also removing the iptables chain with all the associated rules. The cluster data will not be deleted.
+killall脚本清理容器、K3s目录和网络组件，同时也删除了iptables链和所有相关规则。群集数据不会被删除。
 
-To run the killall script from a server node, run:
+要从server节点运行 killall 脚本，请运行:
 
 ```
 /usr/local/bin/k3s-killall.sh

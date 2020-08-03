@@ -1,84 +1,82 @@
 ---
-title: "Air-Gap Install"
+title: "离线安装"
 weight: 60
 ---
 
-You can install K3s in an air-gapped environment using two different methods. You can either deploy a private registry and mirror docker.io or you can manually deploy images such as for small clusters.
+你可以使用两种不同的方法在离线环境中安装K3s。你可以部署一个私有的注册表和mirror docker.io，或者你可以手动部署镜像，比如用于小型集群。
 
-# Private Registry Method
+# 私有注册表方法
 
-This document assumes you have already created your nodes in your air-gap environment and have a Docker private registry on your bastion host.
+本文档假设您已经在离线环境中创建了节点，并且在您的堡垒主机上有一个Docker私有注册表。
 
-If you have not yet set up a private Docker registry, refer to the official documentation [here](https://docs.docker.com/registry/deploying/#run-an-externally-accessible-registry).
+如果你还没有建立私有的Docker注册表，请参考[官方文档](https://docs.docker.com/registry/deploying/#run-an-externally-accessible-registry)。
 
-### Create the Registry YAML
+### 创建注册表YAML
 
-Follow the [Private Registry Configuration]({{< baseurl >}}/k3s/latest/en/installation/private-registry) guide to create and configure the registry.yaml file.
+按照[私有注册表配置]({{< baseurl >}}/k3s/latest/en/installation/private-registry) 指南创建并配置registry.yaml文件。
 
-Once you have completed this, you may now go to the [Install K3s](#install-k3s) section below.
+完成后，现在可以转到下面的[安装K3s](#install-k3s)部分。
 
+# 手动部署镜像方法
 
-# Manually Deploy Images Method
+我们假设您已经在离线环境中创建了节点。这种方法需要您手动将必要的镜像部署到每个节点，适用于运行私有注册表不可行的边缘部署场景。
 
-We are assuming you have created your nodes in your air-gap environment.
-This method requires you to manually deploy the necessary images to each node and is appropriate for edge deployments where running a private registry is not practical.
+### 准备镜像目录和K3s二进制文件
 
-### Prepare the Images Directory and K3s Binary
-Obtain the images tar file for your architecture from the [releases](https://github.com/rancher/k3s/releases) page for the version of K3s you will be running.
+从[发布](https://github.com/rancher/k3s/releases)页面获取你所运行的K3s版本的镜像tar文件。
 
-Place the tar file in the `images` directory, for example:
+将tar文件放在`images`目录下，例如：
 
 ```sh
 sudo mkdir -p /var/lib/rancher/k3s/agent/images/
 sudo cp ./k3s-airgap-images-$ARCH.tar /var/lib/rancher/k3s/agent/images/
 ```
 
-Place the k3s binary at /usr/local/bin/k3s and ensure it is executable.
+将k3s二进制文件放在/usr/local/bin/k3s，并确保拥有可执行权限。
 
-Follow the steps in the next section to install K3s.
+按照下一节的步骤来安装K3s。
 
-# Install K3s
+# 安装 K3s
 
-Only after you have completed either the [Private Registry Method](#private-registry-method) or the [Manually Deploy Images Method](#manually-deploy-images-method) above should you install K3s.
+只有在完成上述[私有注册表方法](#private-registry-method)或[手动部署镜像方法](#manually-deploy-images-method)后，才能安装K3s。
 
-Obtain the K3s binary from the [releases](https://github.com/rancher/k3s/releases) page, matching the same version used to get the airgap images.
-Obtain the K3s install script at https://get.k3s.io
+从[发布](https://github.com/rancher/k3s/releases)页面获取K3s二进制文件，K3s二进制文件需要与离线镜像的版本匹配。
+获取K3s安装脚本：https://get.k3s.io。
 
-Place the binary in `/usr/local/bin` on each node and ensure it is executable.
-Place the install script anywhere on each node, and name it `install.sh`.
+将二进制文件放在每个节点的`/usr/local/bin`中，并确保拥有可执行权限。将安装脚本放在每个节点的任意位置，并将其命名为`install.sh`。
 
 
-### Install Options
-You can install K3s on one or more servers as described below.
+### 安装选项
+你可以在一个或多个server上安装K3s，如下所述
 
 {{% tabs %}}
-{{% tab "Single Server Configuration" %}}
+{{% tab "单K3s Server配置" %}}
 
-To install K3s on a single server simply do the following on the server node.
+要在单台server上安装K3s，只需在server节点上进行以下操作：
 
 ```
 INSTALL_K3S_SKIP_DOWNLOAD=true ./install.sh
 ```
 
-Then, to optionally add additional agents do the following on each agent node. Take care to ensure you replace `myserver` with the IP or valid DNS of the server and replace `mynodetoken` with the node token from the server typically at `/var/lib/rancher/k3s/server/node-token`
+然后，要选择添加其他agent，请在每个agent节点上执行以下操作。注意将 `myserver` 替换为server的IP或有效的DNS，并将 `mynodetoken` 替换server节点的token，通常在`/var/lib/rancher/k3s/server/node-token`。
 
 ```
 INSTALL_K3S_SKIP_DOWNLOAD=true K3S_URL=https://myserver:6443 K3S_TOKEN=mynodetoken ./install.sh
 ```
 
 {{% /tab %}}
-{{% tab "High Availability Configuration" %}}
+{{% tab "高可用配置" %}}
 
-Reference the [High Availability with an External DB]({{< baseurl >}}/k3s/latest/en/installation/ha) or [High Availability with Embedded DB (Experimental)]({{< baseurl >}}/k3s/latest/en/installation/ha-embedded) guides. You will be tweaking install commands so you specify `INSTALL_K3S_SKIP_DOWNLOAD=true` and run your install script locally instead of via curl. You will also utilize `INSTALL_K3S_EXEC='args'` to supply any arguments to k3s.
+参考 [使用外部数据库实现高可用]({{< baseurl >}}/k3s/latest/en/installation/ha)或 [嵌入式DB的高可用（实验）]({{< baseurl >}}/k3s/latest/en/installation/ha-embedded)指南。您将调整安装命令，以便指定`INSTALL_K3S_SKIP_DOWNLOAD=true`并在本地运行安装脚本，而不是通过curl。您还将利用`INSTALL_K3S_EXEC='args'`为k3s提供其他参数。
 
-For example, step two of the High Availability with an External DB guide mentions the following:
+例如，"使用外部数据库实现高可用"指南的第二步提到了以下内容：
 
 ```
 curl -sfL https://get.k3s.io | sh -s - server \
   --datastore-endpoint="mysql://username:password@tcp(hostname:3306)/database-name"
 ```
 
-Instead, you would modify such examples like below:
+相反，您将修改如下示例：
 
 ```
 INSTALL_K3S_SKIP_DOWNLOAD=true INSTALL_K3S_EXEC='server --datastore-endpoint="mysql://username:password@tcp(hostname:3306)/database-name"' ./install.sh
@@ -87,32 +85,29 @@ INSTALL_K3S_SKIP_DOWNLOAD=true INSTALL_K3S_EXEC='server --datastore-endpoint="my
 {{% /tab %}}
 {{% /tabs %}}
 
->**Note:** K3s additionally provides a `--resolv-conf` flag for kubelets, which may help with configuring DNS in air-gap networks.
+>**注意:** K3s还为kubelets提供了一个`--resolv-conf`标志，这可能有助于在离线网络中配置DNS。
 
-# Upgrading
+# 升级
 
-### Install Script Method
+### 安装脚本方法
 
-Upgrading an air-gap environment can be accomplished in the following manner:
+离线环境的升级可以通过以下方式完成：
 
-1. Download the new air-gap images (tar file) from the [releases](https://github.com/rancher/k3s/releases) page for the version of K3s you will be upgrading to. Place the tar in the `/var/lib/rancher/k3s/agent/images/` directory on each
-node. Delete the old tar file.
-2. Copy and replace the old K3s binary in `/usr/local/bin` on each node. Copy over the install script at https://get.k3s.io (as it is possible it has changed since the last release). Run the script again just as you had done in the past
-with the same environment variables.
-3. Restart the K3s service (if not restarted automatically by installer).
+1. 从[发布](https://github.com/rancher/k3s/releases)页面下载要升级到的K3s版本。将tar文件放在每个节点的`/var/lib/rancher/k3s/agent/images/`目录下。删除旧的tar文件。
+2. 复制并替换每个节点上`/usr/local/bin`中的旧K3s二进制文件。复制https://get.k3s.io 的安装脚本（因为它可能在上次发布后发生了变化）。再次运行脚本，就像你过去用相同的环境变量做的那样。
+3. 重启K3s服务（如果安装程序没有自动重新启动）。
 
+### 自动升级方法
 
-### Automated Upgrades Method
+从v1.17.4+k3s1开始，K3s支持[自动升级]({{< baseurl >}}/k3s/latest/en/upgrades/automated/)。要在离线环境中启用此功能，您必须确保所需镜像在您的私有注册表中可用。
 
-As of v1.17.4+k3s1 K3s supports [automated upgrades]({{< baseurl >}}/k3s/latest/en/upgrades/automated/). To enable this in air-gapped environments, you must ensure the required images are available in your private registry.
+你将需要与你打算升级到的K3s版本相对应的rancher/k3s-upgrade版本。注意，图像标签将K3s版本中的`+`替换为`-`，因为Docker图像不支持`+`。
 
-You will need the version of rancher/k3s-upgrade that corresponds to the version of K3s you intend to upgrade to. Note, the image tag replaces the `+` in the K3s release with a `-` because Docker images do not support `+`.
-
-You will also need the versions of system-upgrade-controller and kubectl that are specified in the system-upgrade-controller manifest YAML that you will deploy. Check for the latest release of the system-upgrade-controller [here](https://github.com/rancher/system-upgrade-controller/releases/latest) and download the system-upgrade-controller.yaml to determine the versions you need to push to your private registry. For example, in release v0.4.0 of the system-upgrade-controller, these images are specified in the manifest YAML:
+你还需要在你要部署的system-upgrad-controller manifest YAML中指定的system-upgrad-controller和kubectl的版本。在[这里](https://github.com/rancher/system-upgrade-controller/releases/latest)检查system-upgrad-controller的最新版本，并下载system-upgrad-controller.yaml来确定你需要推送到私有注册表的版本。例如，在system-upgrade-controller的v0.4.0版本中，在manifest YAML中指定了这些镜像：
 
 ```
 rancher/system-upgrade-controller:v0.4.0
 rancher/kubectl:v0.17.0
 ```
 
-Once you have added the necessary rancher/k3s-upgrade, rancher/system-upgrade-controller, and rancher/kubectl images to your private registry, follow the [automated upgrades]({{< baseurl >}}/k3s/latest/en/upgrades/automated/) guide.
+一旦您将必要的rancher/k3s-upgrade、rancher/system-upgrade-controller和rancher/kubectl镜像添加到您的私有注册表中，就可以按照[自动升级]({{< baseurl >}}/k3s/latest/en/upgrades/automated/)指南进行操作。
