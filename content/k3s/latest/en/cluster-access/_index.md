@@ -21,6 +21,6 @@ kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml get pods --all-namespaces
 helm --kubeconfig /etc/rancher/k3s/k3s.yaml ls --all-namespaces
 ```
 
-### 使用kubectl从外部访问群集
+### 使用kubectl从外部访问集群
 
-将`/etc/rancher/k3s/k3s.yaml`复制到群集外部的计算机上的`~/.kube/config`。然后用你的K3s服务器的IP或名称替换 "localhost"。`kubectl`现在可以管理你的K3s集群了。
+将`/etc/rancher/k3s/k3s.yaml`复制到集群外部的计算机上的`~/.kube/config`。然后用你的K3s服务器的IP或名称替换 "localhost"。`kubectl`现在可以管理你的K3s集群了。

@@ -1,18 +1,18 @@
 ---
-title: "Volumes and Storage"
+title: "卷和存储"
 weight: 30
 ---
 
-When deploying an application that needs to retain data, you’ll need to create persistent storage. Persistent storage allows you to store application data external from the pod running your application. This storage practice allows you to maintain application data, even if the application’s pod fails.
+当部署一个需要保留数据的应用程序时，你需要创建持久存储。持久存储允许您从运行应用程序的 pod 外部存储应用程序数据。即使应用程序的pod发生故障，这种存储方式也可以使您维护应用程序数据。
 
-A persistent volume (PV) is a piece of storage in the Kubernetes cluster, while a persistent volume claim (PVC) is a request for storage. For details on how PVs and PVCs work, refer to the official Kubernetes documentation on [storage.](https://kubernetes.io/docs/concepts/storage/volumes/)
+持久卷(PV)是Kubernetes集群中的一块存储，而持久卷声明(PVC)是对存储的请求。关于PV和PVC的工作原理，请参阅有关[存储](https://kubernetes.io/docs/concepts/storage/volumes/)的Kubernetes官方文档。
 
-This page describes how to set up persistent storage with a local storage provider, or with [Longhorn.](#setting-up-longhorn)
+本页介绍了如何通过local storage provider 或 [Longhorn](#setting-up-Longhorn)来设置持久存储。
 
-# Setting up the Local Storage Provider
-K3s comes with Rancher's Local Path Provisioner and this enables the ability to create persistent volume claims out of the box using local storage on the respective node. Below we cover a simple example. For more information please reference the official documentation [here](https://github.com/rancher/local-path-provisioner/blob/master/README.md#usage).
+# 设置 Local Storage Provider
+K3s自带Rancher的Local Path Provisioner，这使得能够使用各自节点上的本地存储来开箱即用地创建持久卷声明。下面我们介绍一个简单的例子。有关更多信息，请参考[此处](https://github.com/rancher/local-path-provisioner/blob/master/README.md#usage)的官方文档。 
 
-Create a hostPath backed persistent volume claim and a pod to utilize it:
+创建一个由hostPath支持的持久卷声明和一个使用它的pod：
 
 ### pvc.yaml
 
@@ -55,47 +55,47 @@ spec:
       claimName: local-path-pvc
 ```
 
-Apply the yaml:
+应用 yaml:
 
 ```
 kubectl create -f pvc.yaml
 kubectl create -f pod.yaml
 ```
 
-Confirm the PV and PVC are created:
+确认PV和PVC已创建:
 
 ```
 kubectl get pv
 kubectl get pvc
 ```
 
-The status should be Bound for each.
+状态应该都为 Bound
 
-# Setting up Longhorn
+# 设置 Longhorn
 
-[comment]: <> (pending change - longhorn may support arm64 and armhf in the future.)
+[comment]: <> (pending change - longhorn未来可能会支持arm64和armhf。)
 
-> **Note:** At this time Longhorn only supports amd64.
+> **注意:** 目前Longhorn只支持amd64。
 
-K3s supports [Longhorn](https://github.com/longhorn/longhorn). Longhorn is an open-source distributed block storage system for Kubernetes.
+K3s 支持 [Longhorn](https://github.com/longhorn/longhorn). Longhorn是Kubernetes的一个开源分布式块存储系统。
 
-Below we cover a simple example. For more information, refer to the official documentation [here](https://github.com/longhorn/longhorn/blob/master/README.md).
+下面我们介绍一个简单的例子。有关更多信息，请参阅[此处](https://github.com/longhorn/longhorn/blob/master/README.md)的官方文档。
 
-Apply the longhorn.yaml to install Longhorn:
+应用longhorn.yaml来安装Longhorn:
 
 ```
 kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/master/deploy/longhorn.yaml
 ```
 
-Longhorn will be installed in the namespace `longhorn-system`.
+Longhorn将被安装在命名空间`longhorn-system`中。
 
-Before we create a PVC, we will create a storage class for Longhorn with this yaml:
+在创建PVC之前，我们将用这个yaml为Longhorn创建一个存储类：
 
 ```
 kubectl create -f https://raw.githubusercontent.com/longhorn/longhorn/master/examples/storageclass.yaml
 ```
 
-Apply the yaml to create the PVC and pod:
+应用yaml创建PVC和pod:
 
 ```
 kubectl create -f pvc.yaml
@@ -142,11 +142,11 @@ spec:
       claimName: longhorn-volv-pvc
 ```
 
-Confirm the PV and PVC are created:
+确认PV和PVC已创建:
 
 ```
 kubectl get pv
 kubectl get pvc
 ```
 
-The status should be Bound for each.
+状态应该都为 Bound

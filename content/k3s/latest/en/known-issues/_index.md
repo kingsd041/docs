@@ -1,17 +1,17 @@
 ---
-title: Known Issues
+title: 已知问题
 weight: 70
 ---
-The Known Issues are updated periodically and designed to inform you about any issues that may not be immediately addressed in the next upcoming release.
+已知问题会定期更新，旨在告知您有关在下一发行版本中可能不会立即解决的问题。
 
 **Snap Docker**
 
-If you plan to use K3s with docker, Docker installed via a snap package is not recommended as it has been known to cause issues running K3s.
+如果你打算将K3s与docker一起使用，不建议通过snap软件包安装Docker，因为已知它将导致运行K3s的问题。
 
 **Iptables**
 
-If you are running iptables in nftables mode instead of legacy you might encounter issues. We recommend utilizing newer iptables (such as 1.6.1+) to avoid issues.
+如果你在nftables模式下运行iptables，而不是传统模式，你可能会遇到问题。我们建议使用较新的iptables（如1.6.1+）来避免出现问题。
 
 **RootlessKit**
 
-Running K3s with RootlessKit is experimental and has several [known issues.]({{<baseurl>}}/k3s/latest/en/advanced/#known-issues-with-rootlesskit)
+用RootlessKit运行K3s是实验性的，有几个[已知的问题]({{<baseurl>}}/k3s/latest/en/advanced/#known-issues-with-rootlesskit)。

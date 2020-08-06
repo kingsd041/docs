@@ -9,7 +9,7 @@ weight: 40
 
 要在这种模式下运行K3s，你必须有奇数的server节点。我们建议从三个节点开始。
 
-首先使用`cluster-init`标志启动server节点以启用集群功能，并使用一个token作为共享密钥将其他server节点加入到群集中
+首先使用`cluster-init`标志启动server节点以启用集群功能，并使用一个token作为共享密钥将其他server节点加入到集群中
 ```
 K3S_TOKEN=SECRET k3s server --cluster-init
 ```

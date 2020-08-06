@@ -44,7 +44,7 @@ weight: 1
 
 | Flag | 环境变量 | 描述 |
 |------|----------------------|-------------|
-|  `--token value, -t` value  | `K3S_TOKEN`      | 用于将server或agent加入群集的共享secret。 |
+|  `--token value, -t` value  | `K3S_TOKEN`      | 用于将server或agent加集群的共享secret。 |
 |  `--token-file` value    |  `K3S_TOKEN_FILE`   | 包含cluster-secret/token的文件      |
 
 ### 客户端选项
@@ -122,7 +122,7 @@ Agent选项之所以存在，是因为server内嵌了agent进程
 |------|---------|-------------|
 | `--cluster-cidr` value | "10.42.0.0/16"         |  用于Pod IP的网络CIDR        | 
 |  `--service-cidr` value | "10.43.0.0/16"         | 用于service IP的网络CIDR       |
-|  `--cluster-dns` value   | "10.43.0.10"         | 用于coredns服务的群集IP。应该在您的`service-cidr`范围内 |
+|  `--cluster-dns` value   | "10.43.0.10"         | 用于coredns服务的集群IP。应该在您的`service-cidr`范围内 |
 |  `--cluster-domain` value  | "cluster.local"        | 集群域名       | 
 |  `--flannel-backend` value   | "vxlan"      | 'none', 'vxlan', 'ipsec', 'host-gw', 或 'wireguard'中的一个       |
 
@@ -202,10 +202,10 @@ USAGE:
    --data-dir value, -d value                 (data) 存放数据的目录 默认 /var/lib/rancher/k3s or ${HOME}/.rancher/k3s(如果不是root用户)
    --cluster-cidr value                       (networking) 用于Pod IP的网络CIDR (默认: "10.42.0.0/16")
    --service-cidr value                       (networking) 用于service IP的网络CIDR (默认: "10.43.0.0/16")
-   --cluster-dns value                        (networking) 用于coredns服务的群集IP。应该在您的`service-cidr`范围内 (默认: 10.43.0.10)
+   --cluster-dns value                        (networking) 用于coredns服务的集群IP。应该在您的`service-cidr`范围内 (默认: 10.43.0.10)
    --cluster-domain value                     (networking) 集群域名 (默认: "cluster.local")
    --flannel-backend value                    (networking) 'none', 'vxlan', 'ipsec', 'host-gw', 或 'wireguard'中的一个 (默认: "vxlan")
-   --token value, -t value                    (cluster) 用于将server或agent加入群集的共享secret。 [$K3S_TOKEN]
+   --token value, -t value                    (cluster) 用于将server或agent加入集群的共享secret。 [$K3S_TOKEN]
    --token-file value                         (cluster) 包含cluster-secret/token的文件 [$K3S_TOKEN_FILE]
    --write-kubeconfig value, -o value         (client) 将管理客户端的kubeconfig写入这个文件。 [$K3S_KUBECONFIG_OUTPUT]
    --write-kubeconfig-mode value              (client) 用这种模式编写kubeconfig，例如：644 [$K3S_KUBECONFIG_MODE]

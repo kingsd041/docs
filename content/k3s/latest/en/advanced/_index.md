@@ -6,55 +6,53 @@ aliases:
   - /k3s/latest/en/configuration/
 ---
 
-本节包含一些高级信息，描述了你可以运行和管理K3s的不同方式。
+本节包含一些高级信息，描述了你可以运行和管理K3s的不同方式：
 
-- [Certificate Rotation](#certificate-rotation)
-- [Auto-Deploying Manifests](#auto-deploying-manifests)
-- [Using Docker as the Container Runtime](#using-docker-as-the-container-runtime)
-    - [Optional: Use crictl with Docker](#optional-use-crictl-with-docker)
-- [Configuring containerd](#configuring-containerd)
-- [Secrets Encryption Config (Experimental)](#secrets-encryption-config-experimental)
-- [Running K3s with RootlessKit (Experimental)](#running-k3s-with-rootlesskit-experimental)
-    - [Known Issues with RootlessKit](#known-issues-with-rootlesskit)
-    - [Running Servers and Agents with Rootless](#running-servers-and-agents-with-rootless)
-- [Node Labels and Taints](#node-labels-and-taints)
-- [Starting the Server with the Installation Script](#starting-the-server-with-the-installation-script)
-- [Additional Preparation for Alpine Linux Setup](#additional-preparation-for-alpine-linux-setup)
-- [Running K3d (K3s in Docker) and docker-compose](#running-k3d-k3s-in-docker-and-docker-compose)
-- [Enabling legacy iptables on Raspbian Buster](#enabling-legacy-iptables-on-raspbian-buster)
-- [Experimental SELinux Support](#experimental-selinux-support)
+- [证书轮换](#certificate-rotation)
+- [自动部署清单](#auto-deploying-manifests)
+- [使用Docker作为容器运行时](#using-docker-as-the-container-runtime)
+- [配置containerd](#configuring-containerd)
+- [Secrets加密配置 (实验)](#secrets-encryption-config-experimental)
+- [使用RootlessKit运行K3s (实验)](#running-k3s-with-rootlesskit-experimental)
+- [节点标签和污点](#node-labels-and-taints)
+- [使用安装脚本启动server节点](#starting-the-server-with-the-installation-script)
+- [Alpine Linux安装的额外准备工作](#additional-preparation-for-alpine-linux-setup)
+- [运行K3d（Docker中的K3s）和docker-compose](#running-k3d-k3s-in-docker-and-docker-compose)
+- [在Raspbian Buster上启用旧版的iptables](#enabling-legacy-iptables-on-raspbian-buster)
+- [实验性SELinux支持](#experimental-selinux-support)
 
-# Certificate Rotation
+# 证书轮换
 
-By default, certificates in K3s expire in 12 months.
+默认情况下，K3s的证书在12个月内过期。
 
-If the certificates are expired or have fewer than 90 days remaining before they expire, the certificates are rotated when K3s is restarted.
+如果证书已经过期或剩余的时间不足90天，则在K3s重启时轮换证书。
 
-# Auto-Deploying Manifests
+# 自动部署清单
 
-Any file found in `/var/lib/rancher/k3s/server/manifests` will automatically be deployed to Kubernetes in a manner similar to `kubectl apply`.
+在`/var/lib/rancher/k3s/server/manifests`中找到的任何文件都会以类似`kubectl apply`的方式自动部署到Kubernetes。
 
-For information about deploying Helm charts, refer to the section about [Helm.](../helm)
+关于部署Helm charts的信息，请参阅[Helm](./helm)章节。
 
-# Using Docker as the Container Runtime
+# 使用Docker作为容器运行时
 
-K3s includes and defaults to [containerd,](https://containerd.io/) an industry-standard container runtime.
+K3s包含并默认为[containerd,](https://containerd.io/) 一个行业标准的容器运行时。
 
-To use Docker instead of containerd,
 
-1. Install Docker on the K3s node. One of Rancher's [Docker installation scripts](https://github.com/rancher/install-docker) can be used to install Docker:
+要使用Docker而不是containerd,
+
+1. 在K3s节点上安装Docker。可以使用Rancher的一个[Docker安装脚本](https://github.com/rancher/install-docker)来安装Docker:
 
     ```
     curl https://releases.rancher.com/install-docker/19.03.sh | sh
     ```
 
-1. Install K3s using the `--docker` option:
+1. 使用`--docker`选项安装K3s:
 
     ```
     curl -sfL https://get.k3s.io | sh -s - --docker
     ```
 
-1. Confirm that the cluster is available:
+1. 确认集群可用:
 
     ```
     $ sudo k3s kubectl get pods --all-namespaces
@@ -67,7 +65,7 @@ To use Docker instead of containerd,
     kube-system   traefik-758cd5fc85-2wz97                 1/1     Running     0          43s
     ```
 
-1. Confirm that the Docker containers are running:
+1. 确认Docker容器正在运行:
 
     ```
     $ sudo docker ps
@@ -85,11 +83,11 @@ To use Docker instead of containerd,
     64d3517d4a95        rancher/pause:3.1         "/pause"
     ```
 
-### Optional: Use crictl with Docker
+### 可选：将crictl与Docker一起使用
 
-crictl provides a CLI for CRI-compatible container runtimes.
+crictl为兼容CRI的容器运行时提供了CLI
 
-If you would like to use crictl after installing K3s with the `--docker` option, install crictl using the [official documentation:](https://github.com/kubernetes-sigs/cri-tools/blob/master/docs/crictl.md) 
+如果你想在使用`--docker`选项安装K3s后使用crictl，请参考[官方文档](https://github.com/kubernetes-sigs/cri-tools/blob/master/docs/crictl.md)来安装crictl。
 
 ```
 $ VERSION="v1.17.0"
@@ -98,7 +96,7 @@ $ sudo tar zxvf crictl-$VERSION-linux-amd64.tar.gz -C /usr/local/bin
 crictl
 ```
 
-Then start using crictl commands:
+然后开始使用crictl命令:
 
 ```
 $ sudo crictl version
@@ -117,19 +115,19 @@ rancher/metrics-server           v0.3.6              9dd718864ce61       39.9MB
 rancher/pause                    3.1                 da86e6ba6ca19       742kB
 ```
 
-# Configuring containerd
+# 配置containerd
 
-K3s will generate config.toml for containerd in `/var/lib/rancher/k3s/agent/etc/containerd/config.toml`.
+K3s将会在`/var/lib/rancher/k3s/agent/etc/containerd/config.toml`中为containerd生成config.toml。
 
-For advanced customization for this file you can create another file called `config.toml.tmpl` in the same directory and it will be used instead.
+如果要对这个文件进行高级定制，你可以在同一目录中创建另一个名为 `config.toml.tmpl` 的文件，此文件将会代替默认设置。
 
-The `config.toml.tmpl` will be treated as a Go template file, and the `config.Node` structure is being passed to the template. [This template](https://github.com/rancher/k3s/blob/master/pkg/agent/templates/templates.go#L16-L32) example on how to use the structure to customize the configuration file.
+`config.toml.tmpl`将被视为Go模板文件，并且`config.Node`结构被传递给模板。[此模板](https://github.com/rancher/k3s/blob/master/pkg/agent/templates/templates.go#L16-L32)示例介绍了如何使用结构来自定义配置文件。
 
-# Secrets Encryption Config (Experimental)
-As of v1.17.4+k3s1, K3s added the experimental feature of enabling secrets encryption at rest by passing the flag `--secrets-encryption` on a server, this flag will do the following automatically:
+# Secrets加密配置 (实验)
+从v1.17.4+k3s1开始，K3s增加了一个实验性的功能，就是通过在server上传递标志`--secrets-encryption`来实现secrets加密，这个标志会自动进行以下操作:
 
-- Generate an AES-CBC key
-- Generate an encryption config file with the generated key
+- 生成 AES-CBC 密钥
+- 用生成的密钥生成一个加密配置文件
 
 ```
 {
@@ -160,70 +158,67 @@ As of v1.17.4+k3s1, K3s added the experimental feature of enabling secrets encry
 }
 ```
 
-- Pass the config to the KubeAPI as encryption-provider-config
+- 将配置作为encryption-provider-config传递给KubeAPI
 
-Once enabled any created secret will be encrypted with this key. Note that if you disable encryption then any encrypted secrets will not be readable until you enable encryption again.
+一旦启用，任何创建的secrets都将用这个密钥加密。请注意，如果您禁用加密，那么任何加密后的secrets将无法读取，直到您再次启用加密。
 
-# Running K3s with RootlessKit (Experimental)
+# 使用RootlessKit运行K3s (实验)
 
-> **Warning:** This feature is experimental.
+> **警告:** 这个功能是试验性的.
 
-RootlessKit is a kind of Linux-native "fake root" utility, made for mainly [running Docker and Kubernetes as an unprivileged user,](https://github.com/rootless-containers/usernetes) so as to protect the real root on the host from potential container-breakout attacks.
+RootlessKit是一种Linux原生的 "fake root(假根)" 实用程序，主要是为了[以非特权用户身份运行Docker和Kubernetes，](https://github.com/rootless-containers/usernetes)从而保护主机上的 "real root（真根）" 不受潜在的容器破坏攻击。
 
-Initial rootless support has been added but there are a series of significant usability issues surrounding it.
+最初的rootless支持已添加，但是围绕它存在一系列重大的可用性问题。
 
-We are releasing the initial support for those interested in rootless and hopefully some people can help to improve the usability.  First, ensure you have a proper setup and support for user namespaces.  Refer to the [requirements section](https://github.com/rootless-containers/rootlesskit#setup) in RootlessKit for instructions.
-In short, latest Ubuntu is your best bet for this to work.
+我们为那些对rootless的感兴趣的人发布了初步的支持，希望一些人可以帮助改善可用性。 首先，确保你有一个正确的设置和对用户命名空间的支持。 请参考RootlessKit中的[需求部分](https://github.com/rootless-containers/rootlesskit#setup)获取说明。简而言之，最新的Ubuntu是你最好的选择。
 
-### Known Issues with RootlessKit
+### RootlessKit的已知问题
 
-* **Ports**
+* **端口**
 
-    When running rootless a new network namespace is created.  This means that K3s instance is running with networking fairly detached from the host.  The only way to access services run in K3s from the host is to set up port forwards to the K3s network namespace. We have a controller that will automatically bind 6443 and service port below 1024 to the host with an offset of 10000. 
+    在rootless运行时，将创建一个新的网络名称空间。这意味着K3s实例在与主机完全分离的网络上运行。从主机访问在K3s中运行的服务的唯一方法是设置端口转发到K3s网络名称空间。我们有一个控制器，它将自动将6443和1024以下的服务端口绑定到主机，偏移量为10000。
 
-    That means service port 80 will become 10080 on the host, but 8080 will become 8080 without any offset.
+    也就是说服务端口80在主机上会变成10080，但8080会变成8080，没有任何偏移。
 
-    Currently, only `LoadBalancer` services are automatically bound.
+    目前，只有`LoadBalancer`服务会自动绑定。
 
-* **Daemon lifecycle**
+* **守护进程生命周期**
 
-    Once you kill K3s and then start a new instance of K3s it will create a new network namespace, but it doesn't kill the old pods.  So you are left
-    with a fairly broken setup.  This is the main issue at the moment, how to deal with the network namespace.
+    一旦你kill掉K3s，然后启动一个新的K3s实例，它将创建一个新的网络命名空间，但它不会kill掉旧的pods。 所以你留下的是一个相当糟糕的设置。 这是目前最主要的问题，如何处理网络命名空间的问题。
 
-    The issue is tracked in https://github.com/rootless-containers/rootlesskit/issues/65
+    在 https://github.com/rootless-containers/rootlesskit/issues/65 中跟踪了该问题
 
 * **Cgroups**
 
-    Cgroups are not supported.
+    不支持 Cgroups.
 
-### Running Servers and Agents with Rootless
+### 使用Rootless运行Servers和Agents
 
-Just add `--rootless` flag to either server or agent. So run `k3s server --rootless` and then look for the message `Wrote kubeconfig [SOME PATH]` for where your kubeconfig file is.
+只需将`--rootless`标志添加到server或agent即可。因此，运行`k3s server --rootless`，然后查看`Wrote kubeconfig [SOME PATH]`的信息，了解你的kubeconfig文件在哪里。
 
-For more information about setting up the kubeconfig file, refer to the [section about cluster access.](../cluster-access)
+关于设置kubeconfig文件的更多信息，请参考[关于集群访问的部分。](.../cluster-access)
 
-> Be careful, if you use `-o` to write the kubeconfig to a different directory it will probably not work. This is because the K3s instance in running in a different mount namespace.
+要注意，如果你用`-o`把kubeconfig写到其他目录下，则可能无法使用，这是因为K3s实例运行在不同的挂载命名空间。
 
-# Node Labels and Taints
+# 节点标签和污点
 
-K3s agents can be configured with the options `--node-label` and `--node-taint` which adds a label and taint to the kubelet. The two options only add labels and/or taints [at registration time,]({{<baseurl>}}/k3s/latest/en/installation/install-options/#node-labels-and-taints-for-agents) so they can only be added once and not changed after that again by running K3s commands.
+K3s agents 可以通过`--node-label`和`--node-taint`选项进行配置，这两个选项可以给kubelet添加标签和污点。这两个选项只能[在注册时]({{<baseurl>}}/k3s/latest/en/installation/install-options/#node-label-and-taints-for-agents)添加标签和/或污点，所以它们只能被添加一次，之后不能再通过运行K3s命令来改变。
 
-If you want to change node labels and taints after node registration you should use `kubectl`. Refer to the official Kubernetes documentation for details on how to add [taints](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/) and [node labels.](https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes/#add-a-label-to-a-node)
+如果你想在节点注册后更改节点标签和污点，你应该使用`kubectl`。关于如何添加[污点](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/)和[节点标签](https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes/#add-a-label-to-a-node)，请参考Kubernetes官方文档。
 
-# Starting the Server with the Installation Script
+# 使用安装脚本启动Server节点
 
-The installation script will auto-detect if your OS is using systemd or openrc and start the service.
-When running with openrc, logs will be created at `/var/log/k3s.log`. 
+安装脚本将自动检测您的操作系统是使用systemd还是openrc并启动服务。当使用openrc运行时，日志将在`/var/log/k3s.log`中创建。
 
-When running with systemd, logs will be created in `/var/log/syslog` and viewed using `journalctl -u k3s`.
+当使用systemd运行时，日志将在`/var/log/syslog`中创建，并使用`journalctl -u k3s`查看。
 
-An example of installing and auto-starting with the install script:
+使用安装脚本进行安装和自动启动的示例：
 
 ```bash
 curl -sfL https://get.k3s.io | sh -
 ```
 
-When running the server manually you should get an output similar to the following:
+当手动运行server时，你应该得到一个类似于下面的输出：
 
 ```
 $ k3s server
@@ -241,39 +236,38 @@ INFO[2019-01-22T15:16:20.541027133-07:00] Wrote kubeconfig /etc/rancher/k3s/k3s.
 INFO[2019-01-22T15:16:20.541049100-07:00] Run: k3s kubectl                             
 ```
 
-The output will likely be much longer as the agent will create a lot of logs. By default the server
-will register itself as a node (run the agent).
+由于agent将创建大量的日志，输出可能会更长。默认情况下，server会将自身注册为一个节点（运行agent）。
 
-# Additional Preparation for Alpine Linux Setup
+# Alpine Linux安装的额外准备工作
 
-In order to set up Alpine Linux, you have to go through the following preparation:
+为了设置Alpine Linux，需要进行以下准备工作：
 
-Update **/etc/update-extlinux.conf** by adding:
+更新 **/etc/update-extlinux.conf** 添加：
 
 ```
 default_kernel_opts="...  cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory"
 ```
 
-Then update the config and reboot:
+然后更新配置，重启：
 
 ```bash
 update-extlinux
 reboot
 ```
 
-# Running K3d (K3s in Docker) and docker-compose
+# 运行K3d（Docker中的K3s）和docker-compose
 
-[k3d](https://github.com/rancher/k3d) is a utility designed to easily run K3s in Docker.
+[k3d](https://github.com/rancher/k3d)是一个设计用于在Docker中轻松运行K3s的工具。
 
-It can be installed via the the [brew](https://brew.sh/) utility on MacOS:
+它可以通过MacOS上的[brew](https://brew.sh/)工具安装：
 
 ```
 brew install k3d
 ```
 
-`rancher/k3s` images are also available to run the K3s server and agent from Docker. 
+`rancher/k3s`镜像也可用于从Docker运行K3s server和agent。
 
-A `docker-compose.yml` is in the root of the K3s repo that serves as an example of how to run K3s from Docker. To run from `docker-compose` from this repo, run:
+在K3s repo的根目录下有一个`docker-compose.yml`，作为如何从Docker运行K3s的示例。要从这个repo中运行`docker-compose`，请运行：
 
     docker-compose up --scale agent=3
     # kubeconfig is written to current dir
@@ -285,9 +279,9 @@ A `docker-compose.yml` is in the root of the K3s repo that serves as an example 
     d54c8b17c055   Ready    <none>   11s   v1.13.2-k3s2
     db7a5a5a5bdd   Ready    <none>   12s   v1.13.2-k3s2
 
-To run the agent only in Docker, use `docker-compose up agent`.
+要只在Docker中运行agent，使用`docker-compose up agent`。
 
-Alternatively the `docker run` command can also be used:
+或者，也可以使用`docker run`命令：
 
     sudo docker run \
       -d --tmpfs /run \
@@ -297,9 +291,9 @@ Alternatively the `docker run` command can also be used:
       --privileged rancher/k3s:vX.Y.Z
 
 
-# Enabling legacy iptables on Raspbian Buster
+# 在Raspbian Buster上启用旧版的iptables
 
-Raspbian Buster defaults to using `nftables` instead of `iptables`.  **K3S** networking features require `iptables` and do not work with `nftables`.  Follow the steps below to switch configure **Buster** to use `legacy iptables`:
+Raspbian Buster默认使用`nftables`而不是`iptables`。 **K3S** 网络功能需要使用`iptables`，而不能使用`nftables`。 按照以下步骤切换配置**Buster**使用`legacy iptables`：
 ```
 sudo iptables -F
 sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
@@ -307,16 +301,17 @@ sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
 sudo reboot
 ```
 
-# Experimental SELinux Support
+# 实验性SELinux支持
 
-As of release v1.17.4+k3s1, experimental support for SELinux has been added to K3s's embedded containerd. If you are installing K3s on a system where SELinux is enabled by default (such as CentOS), you must ensure the proper SELinux policies have been installed. The [install script]({{<baseurl>}}/k3s/latest/en/installation/install-options/#installation-script-options) will fail if they are not. The necessary policies can be installed with the following commands:
+从v1.17.4+k3s1版本开始，K3s的嵌入式containerd中增加了对SELinux的实验性支持。如果您在默认启用SELinux的系统上安装K3s（如CentOS），您必须确保安装了正确的SELinux策略。如果没有安装，[安装脚本]({{<baseurl>}}/k3s/latest/en/installation/install-options/#installation-script-options)将失败。可以使用以下命令安装必要的策略。
 ```
 yum install -y container-selinux selinux-policy-base
 rpm -i https://rpm.rancher.io/k3s-selinux-0.1.1-rc1.el7.noarch.rpm
 ```
 
-To force the install script to log a warning rather than fail, you can set the following environment variable: `INSTALL_K3S_SELINUX_WARN=true`.
+要强制安装脚本记录一个警告而不是失败，您可以设置以下环境变量： 
+`INSTALL_K3S_SELINUX_WARN=true`
 
-You can turn off SELinux enforcement in the embedded containerd by launching K3s with the `--disable-selinux` flag.
+你可以通过使用`--disable-selinux`标志启动K3s来禁用嵌入式containerd中的SELinux。
 
-Note that support for SELinux in containerd is still under development. Progress can be tracked in [this pull request](https://github.com/containerd/cri/pull/1246).
+请注意，对containerd中SELinux的支持仍在开发中。进展情况可以在[这个pull request](https://github.com/containerd/cri/pull/1246)中跟踪。

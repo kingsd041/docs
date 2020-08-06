@@ -28,7 +28,7 @@ Agent通过固定的注册地址进行注册，但注册后直接与其中一个
 4. [加入agent节点](#4-optional-join-agent-nodes)
 
 ### 1. 创建一个外部数据存储
-你首先需要为集群创建一个外部数据存储。请参阅[群集数据存储选项]({{<baseurl>}}/k3s/latest/en/installation/datastore/)文档了解更多细节。
+你首先需要为集群创建一个外部数据存储。请参阅[集群数据存储选项]({{<baseurl>}}/k3s/latest/en/installation/datastore/)文档了解更多细节。
 
 ### 2. 启动server节点
 K3s需要两个或更多的server节点来实现这种HA配置。请参阅[安装要求]({{<baseurl>}}/k3s/latest/en/installation/installation-requirements/)指南了解最低主机要求。
@@ -54,7 +54,7 @@ curl -sfL https://get.k3s.io | sh -s - server \
 
 ### 3. 配置固定的注册地址
 
-Agent节点需要一个URL来注册。这可以是任何server节点的IP或主机名，但在许多情况下，这些节点可能会随着时间的推移而改变。例如，如果您在支持缩放组的云中运行群集，您可能会随着时间的推移上下缩放server节点组，导致节点被创建和销毁，从而具有与初始server节点不同的IP。因此，你应该在server节点前面有一个稳定的端点，不会随时间推移而改变。可以使用许多方法来设置此端点，例如：
+Agent节点需要一个URL来注册。这可以是任何server节点的IP或主机名，但在许多情况下，这些节点可能会随着时间的推移而改变。例如，如果您在支持缩放组的云中运行集群，您可能会随着时间的推移上下缩放server节点组，导致节点被创建和销毁，从而具有与初始server节点不同的IP。因此，你应该在server节点前面有一个稳定的端点，不会随时间推移而改变。可以使用许多方法来设置此端点，例如：
 
 * 一个4层（TCP）负载均衡器
 * 轮询 DNS

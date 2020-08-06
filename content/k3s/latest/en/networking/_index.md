@@ -1,43 +1,43 @@
 ---
-title: "Networking"
+title: "网络"
 weight: 35
 ---
 
->**Note:** CNI options are covered in detail on the [Installation Network Options]({{<baseurl>}}/k3s/latest/en/installation/network-options/) page. Please reference that page for details on Flannel and the various flannel backend options or how to set up your own CNI.
+>**注意:** CNI选项在[安装网络选项]({{<baseurl>}}/k3s/latest/en/installation/network-options/)页面有详细介绍。请参考该页面了解Flannel和各种flannel后端选项的细节或者如何设置自己的CNI。
 
-Open Ports
+开放端口
 ----------
-Please reference the [Installation Requirements]({{<baseurl>}}/k3s/latest/en/installation/installation-requirements/#networking) page for port information.
+请参考[安装要求]({{<baseurl>}}/k3s/latest/en/installation/installation-requirements/#networking)页面了解端口信息。
 
 CoreDNS
 -------
 
-CoreDNS is deployed on start of the agent. To disable, run each server with the `--disable coredns` option.
+CoreDNS会在agent启动时部署。要禁用，请在每个server上运行`--disable coredns`选项禁用coredns。
 
-If you don't install CoreDNS, you will need to install a cluster DNS provider yourself.
+如果你不安装CoreDNS，你需要自己安装一个集群DNS提供商。
 
 Traefik Ingress Controller
 --------------------------
 
-[Traefik](https://traefik.io/) is a modern HTTP reverse proxy and load balancer made to deploy microservices with ease. It simplifies networking complexity while designing, deploying, and running applications.
+[Traefik](https://traefik.io/)是一个现代的HTTP反向代理和负载均衡器，它是为了轻松部署微服务而生的。在设计，部署和运行应用程序时，它简化了网络复杂性。
 
-Traefik is deployed by default when starting the server. For more information see [Auto Deploying Manifests]({{<baseurl>}}/k3s/latest/en/advanced/#auto-deploying-manifests). The default config file is found in `/var/lib/rancher/k3s/server/manifests/traefik.yaml` and any changes made to this file will automatically be deployed to Kubernetes in a manner similar to `kubectl apply`.
+启动server时，默认情况下会部署Traefik。更多信息请参见[自动部署清单]({{<baseurl>}}/k3s/latest/en/advanced/#auto-deploying-manifests)。默认的配置文件在`/var/lib/rancher/k3s/server/manifests/traefik.yaml`中，对该文件的任何修改都会以类似`kubectl apply`的方式自动部署到Kubernetes中。
 
-The Traefik ingress controller will use ports 80, 443, and 8080 on the host (i.e. these will not be usable for HostPort or NodePort).
+Traefik ingress controller 将使用主机上的 80、443 和 8080 端口（即这些端口不能用于 HostPort 或 NodePort）。
 
-You can tweak traefik to meet your needs by setting options in the traefik.yaml file. Refer to the official [Traefik for Helm Configuration Parameters](https://github.com/helm/charts/tree/master/stable/traefik#configuration) readme for more information.
+你可以通过在traefik.yaml文件中设置选项来调整traefik以满足你的需求。更多信息请参考官方的[Traefik配置参数](https://github.com/helm/charts/tree/master/stable/traefik#configuration)。
 
-To disable it, start each server with the `--disable traefik` option.
+要禁用它，请使用`--disable traefik`选项启动每个server。
 
 Service Load Balancer
 ---------------------
 
-K3s includes a basic service load balancer that uses available host ports. If you try to create a load balancer that listens on port 80, for example, it will try to find a free host in the cluster for port 80. If no port is available, the load balancer will stay in Pending.
+K3s包含一个基本服务负载均衡器，它使用可用的主机端口。例如，如果你试图创建一个在80端口上监听的负载均衡器，它将尝试在集群中找到一个80端口的空闲主机。如果没有可用端口，负载均衡器将保持在Pending状态。
 
-To disable the embedded load balancer, run the server with the `--disable servicelb` option. This is necessary if you wish to run a different load balancer, such as MetalLB.
+要禁用嵌入式负载均衡器，请使用`--disable servicelb`选项运行server。如果你想运行其他的负载均衡器，如MetalLB，这是很有必要的。
 
-Nodes Without a Hostname
+没有主机名的节点
 ------------------------
 
-Some cloud providers, such as Linode, will create machines with "localhost" as the hostname and others may not have a hostname set at all. This can cause problems with domain name resolution. You can run K3s with the `--node-name` flag or `K3S_NODE_NAME` environment variable and this will pass the node name to resolve this issue.
+一些云提供商（如Linode）会以 "localhost "作为主机名创建机器，而其他提供商可能根本没有设置主机名。这可能会导致域名解析的问题。你可以用`--node-name`标志或`K3S_NODE_NAME`环境变量来运行K3s，这样就会传递节点名称来解决这个问题。
 

@@ -1,30 +1,30 @@
 ---
-title: FAQ
+title: 常见问题
 weight: 60
 ---
 
-The FAQ is updated periodically and designed to answer the questions our users most frequently ask about K3s.
+常见问题定期更新，旨在回答用户最常问到的关于K3s的问题。
 
-**Is K3s a suitable replacement for k8s?**
+**K3s是否适合替代k8s？**
 
-K3s is capable of nearly everything k8s can do. It is just a more lightweight version. See the [main]({{<baseurl>}}/k3s/latest/en/) docs page for more details.
+K3s几乎可以胜任k8s的所有工作, 它只是一个更轻量级的版本。有关更多详细信息，请参见[主要]({{<baseurl>}}/k3s/latest/en/)文档页面。
 
-**How can I use my own Ingress instead of Traefik?**
+**如何用自己的Ingress代替Traefik？**
 
-Simply start K3s server with `--disable traefik` and deploy your ingress.
+只需用`--disable traefik`启动K3s server，然后部署你需要的ingress。
 
-**Does K3s support Windows?**
+**K3s是否支持Windows？**
 
-At this time K3s does not natively support Windows, however we are open to the idea in the future.
+目前，K3s本身不支持Windows，但是我们对将来的想法持开放态度。
 
-**How can I build from source?**
+**如何通过源码构建？**
 
-Please reference the K3s [BUILDING.md](https://github.com/rancher/k3s/blob/master/BUILDING.md) with instructions.
+请参考K3s [BUILDING.md](https://github.com/rancher/k3s/blob/master/BUILDING.md)的说明。
 
-**Where are the K3s logs?**
+**K3s的日志在哪里？**
 
-The installation script will auto-detect if your OS is using systemd or openrc and start the service.
+安装脚本会自动检测你的操作系统是systemd或openrc并启动服务。
 
-When running with openrc, logs will be created at `/var/log/k3s.log`.
+当使用openrc运行时，日志将在`/var/log/k3s.log`中创建。
 
-When running with systemd, logs will be created in `/var/log/syslog` and viewed using `journalctl -u k3s`.
+当使用systemd运行时，日志将在`/var/log/syslog`中创建，并使用`journalctl -u k3s`查看。

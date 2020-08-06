@@ -3,29 +3,29 @@ title: Helm
 weight: 42
 ---
 
-K3s release _v1.17.0+k3s.1_ added support for Helm 3. You can access the Helm 3 documentation [here](https://helm.sh/docs/intro/quickstart/).
+K3s _v1.17.0+k3s.1_ 增加了对Helm 3的支持。您可以在[此处](https://helm.sh/docs/intro/quickstart/)访问Helm 3文档。 
 
-Helm is the package management tool of choice for Kubernetes. Helm charts provide templating syntax for Kubernetes YAML manifest documents. With Helm we can create configurable deployments instead of just using static files. For more information about creating your own catalog of deployments, check out the docs at https://helm.sh/.
+Helm是Kubernetes首选的软件包管理工具。Helm charts 为Kubernetes YAML清单文件提供了模板化语法。通过Helm，我们可以创建可配置的部署，而不仅仅是使用静态文件。关于创建自己的部署目录的更多信息，请查看文档：https://helm.sh/。
 
-K3s does not require any special configuration to start using Helm 3. Just be sure you have properly set up your kubeconfig as per the section about [cluster access.](../cluster-access)
+K3s不需要任何特殊的配置就可以开始使用Helm 3。只要确保你已经按照[集群访问](.../cluster-access)一节正确设置了你的kubeconfig。
 
-This section covers the following topics:
+本节涵盖以下主题：
 
-- [Upgrading Helm](#upgrading-helm)
-- [Deploying manifests and Helm charts](#deploying-manifests-and-helm-charts)
-- [Using the Helm CRD](#using-the-helm-crd)
+- [升级 Helm](#upgrading-helm)
+- [部署 manifests 和 Helm charts](#deploying-manifests-and-helm-charts)
+- [使用 Helm CRD](#using-the-helm-crd)
 
-### Upgrading Helm
+### 升级 Helm
 
-If you were using Helm v2 in previous versions of K3s, you may upgrade to v1.17.0+k3s.1 or newer and Helm 2 will still function. If you wish to migrate to Helm 3, [this](https://helm.sh/blog/migrate-from-helm-v2-to-helm-v3/) blog post by Helm explains how to use a plugin to successfully migrate. Refer to the official Helm 3 documentation [here](https://helm.sh/docs/) for more information. K3s will handle either Helm v2 or Helm v3 as of v1.17.0+k3s.1. Just be sure you have properly set your kubeconfig as per the examples in the section about [cluster access.](../cluster-access)
+如果你在早期的K3s版本中使用的是Helm v2，你可以升级到v1.17.0+k3s.1或更新版本，但Helm 2仍然可以使用。如果你想迁移到Helm 3，Helm的[这篇](https://helm.sh/blog/migrate-from-helm-v2-to-helm-v3/)博客文章介绍了如何使用插件成功迁移。更多信息请参考Helm 3的[官方文档](https://helm.sh/docs/)。从v1.17.0+k3s.1开始，K3s可以同时处理Helm v2或Helm v3。只要确保你已经按照[集群访问](.../cluster-access)一节中的例子正确设置了你的kubeconfig。
 
-Note that Helm 3 no longer requires Tiller and the `helm init` command. Refer to the official documentation for details.
+注意，Helm 3不再需要Tiller和`helm init`命令。详情请参考官方文档。
 
-### Deploying Manifests and Helm Charts
+### 部署 manifests 和 Helm charts
 
-Any file found in `/var/lib/rancher/k3s/server/manifests` will automatically be deployed to Kubernetes in a manner similar to `kubectl apply`.
+在`/var/lib/rancher/k3s/server/manifests`中找到的任何文件都会以类似`kubectl apply`的方式自动部署到Kubernetes。
 
-It is also possible to deploy Helm charts. K3s supports a CRD controller for installing charts. A YAML file specification can look as following (example taken from `/var/lib/rancher/k3s/server/manifests/traefik.yaml`):
+K3s也可以部署Helm charts。K3s支持一个CRD控制器来安装charts。YAML文件规范如下所示（例子摘自`/var/lib/rancher/k3s/server/manifests/traefik.yaml`）：
 
 ```yaml
 apiVersion: helm.cattle.io/v1
@@ -40,11 +40,11 @@ spec:
     ssl.enabled: "true"
 ```
 
-Keep in mind that `namespace` in your HelmChart resource metadata section should always be `kube-system`, because the K3s deploy controller is configured to watch this namespace for new HelmChart resources. If you want to specify the namespace for the actual Helm release, you can do that using `targetNamespace` key under the `spec` directive, as shown in the configuration example below.
+请记住，你的HelmChart metadata 部分中的`namespace`应该总是`kube-system`，因为K3s部署控制器配置为在此namespace中监视新的HelmChart资源。如果你想为实际的Helm release 指定namespace，你可以使用`spec`指令下的`targetNamespace`键来实现，如下面的配置示例所示。
 
-> **Note:** In order for the Helm Controller to know which version of Helm to use to Auto-Deploy a helm app, please specify the `helmVersion` in the spec of your YAML file.
+> **注意:** 为了让Helm控制器知道使用哪个版本的Helm来自动部署helm应用，请在你的YAML文件的spec中指定`helmVersion`。
 
-Also note that besides `set`, you can use `valuesContent` under the `spec` directive. And it's okay to use both of them:
+另外要注意的是，除了 `set`，你还可以在 `spec` 指令下使用 `valuesContent`。而且这两个可以同时使用：
 
 ```yaml
 apiVersion: helm.cattle.io/v1
@@ -68,11 +68,11 @@ spec:
         enabled: true
 ```
 
-K3s versions `<= v0.5.0` used `k3s.cattle.io` for the API group of HelmCharts. This has been changed to `helm.cattle.io` for later versions.
+K3s版本`<= v0.5.0`对HelmCharts的API组使用`k3s.cattle.io`。后来的版本已经改为`helm.cattle.io`。
 
-### Using the Helm CRD
+### 使用 Helm CRD
 
-You can deploy a third-party Helm chart using an example like this:
+你可以使用这样的例子部署第三方Helm chart：
 
 ```yaml
 apiVersion: helm.cattle.io/v1
@@ -86,7 +86,7 @@ spec:
   targetNamespace: default
 ```
 
-You can install a specific version of a Helm chart using an example like this:
+你可以使用这样的例子来安装一个特定版本的Helm chart：
 
 ```yaml
 apiVersion: helm.cattle.io/v1

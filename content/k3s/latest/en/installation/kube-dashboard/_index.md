@@ -71,7 +71,7 @@ sudo k3s kubectl proxy
 
 #### 高级：远程访问仪表板
 
-请参阅仪表盘文档。使用[端口转发](https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/)来访问群集中的应用程序。
+请参阅仪表盘文档。使用[端口转发](https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/)来访问集群中的应用程序。
 
 ### 升级仪表盘
 
